@@ -1,3 +1,6 @@
 Basestation/venv/
 Basestation/.idea/
 Unit/bin/
+Unit/Debug/
+Unit/Unit.componentinfo.xml
+Unit/.vs/
