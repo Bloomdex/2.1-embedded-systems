@@ -27,8 +27,10 @@ void setup(void) {
 
 void loop() {
 	int8_t temperature = (int8_t)getTemperature();
+	int8_t lightIntensity = (int8_t)getLightIntensity();
 	
-	transmitData(temperature);_delay_ms(1000);
+	transmitData(temperature); _delay_ms(1000);
+	transmitData(lightIntensity); _delay_ms(1000);
 }
 
 int main (void)
