@@ -16,3 +16,13 @@ int analogRead(uint8_t pin) {
 	// Return ADC value
 	return ADCW;
 }
+
+// Write to a set of masked pins
+void digitalWrite(char port, uint8_t mask, uint8_t value) {
+	if (port == 'B') {
+		PORTB = (PORTB & ~mask) | (value & mask);
+	}
+	else if (port == 'D') {
+		PORTD = (PORTD & ~mask) | (value & mask);
+	}
+}

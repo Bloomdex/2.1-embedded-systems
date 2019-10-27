@@ -5,12 +5,14 @@
 
 #include "UART.h"
 #include "sensors.h"
-
-#define BLINK_DELAY_MS 1000
+#include "rollerShutter.h"
 
 
 void setup(void) {
+	DDRB = 0xFF;
+	
 	initUART();
+	
 	
 	// Source: https://medium.com/@jrejaud/arduino-to-avr-c-reference-guide-7d113b4309f7
 	// 16Mhz / 128 = 125kHz ADC reference clock
@@ -21,6 +23,7 @@ void setup(void) {
 	
 	ADCSRA |= (1<<ADEN);	// Turn on ADC
 	ADCSRA |= (1<<ADSC);	// Do a preliminary conversion
+	
 
 	_delay_ms(1000);
 }
@@ -36,6 +39,8 @@ void loop() {
 int main (void)
 {
 	setup();
+	
+	rollerShutterStartAnimate();
 	
 	while(1) {
 		loop();
