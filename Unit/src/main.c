@@ -5,6 +5,7 @@
 
 #include "UART.h"
 #include "sensors.h"
+#include "rollerShutter.h"
 
 
 void setup(void) {
@@ -31,16 +32,18 @@ void loop() {
 	int8_t temperature = (int8_t)getTemperature();
 	int8_t lightIntensity = (int8_t)getLightIntensity();
 	
-	transmitData(temperature); _delay_ms(1000);
-	transmitData(lightIntensity); _delay_ms(1000);
+	transmitData(temperature);
+	transmitData(lightIntensity);
 }
 
 int main (void)
 {
 	setup();
+	setRollerShutterMoving();
 	
 	while(1) {
 		loop();
+		rollerShutterAnimate();
 	}
 	
 	return 0;

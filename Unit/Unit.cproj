@@ -141,6 +141,9 @@
     <Compile Include="src\Header Files\portManipulator.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\Header Files\rollerShutter.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\Header Files\sensors.h">
       <SubType>compile</SubType>
     </Compile>
@@ -151,6 +154,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\portManipulator.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\rollerShutter.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\sensors.c">
