@@ -5,7 +5,6 @@
 
 #include "UART.h"
 #include "sensors.h"
-#include "rollerShutter.h"
 
 
 void setup(void) {
@@ -39,8 +38,6 @@ void loop() {
 int main (void)
 {
 	setup();
-	
-	rollerShutterStartAnimate();
 	
 	while(1) {
 		loop();
