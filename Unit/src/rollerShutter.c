@@ -27,9 +27,9 @@ void setRollerShutterStill() {
 
 void rollerShutterAnimate() {
 	if(animationActive == 1) {
-		digitalWrite('B', 0x0F, 0x02);
+		digitalWrite(&PORTB, 0x0F, 0x02);
 		_delay_ms(1000);
-		digitalWrite('B', 0x0F, 0x04);
+		digitalWrite(&PORTB, 0x0F, 0x04);
 		_delay_ms(1000);
 	}
 }

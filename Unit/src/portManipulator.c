@@ -18,11 +18,6 @@ int analogRead(uint8_t pin) {
 }
 
 // Write to a set of masked pins
-void digitalWrite(char port, uint8_t mask, uint8_t value) {
-	if (port == 'B') {
-		PORTB = (PORTB & ~mask) | (value & mask);
-	}
-	else if (port == 'D') {
-		PORTD = (PORTD & ~mask) | (value & mask);
-	}
+void digitalWrite(volatile uint8_t *port, uint8_t mask, uint8_t value) {
+	*port = (*port & ~mask) | (value & mask);
 }
