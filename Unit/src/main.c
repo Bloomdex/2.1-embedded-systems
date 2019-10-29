@@ -6,23 +6,14 @@
 #include "UART.h"
 #include "sensors.h"
 #include "rollerShutter.h"
+#include "portManipulator.h"
 
 
 void setup(void) {
 	DDRB = 0xFF;
 	
 	initUART();
-	
-	
-	// Source: https://medium.com/@jrejaud/arduino-to-avr-c-reference-guide-7d113b4309f7
-	// 16Mhz / 128 = 125kHz ADC reference clock
-	ADCSRA |= ((1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0));
-	
-	// Voltage reference from AVcc (5V on ATMega328p)
-	ADMUX |= (1<<REFS0);
-	
-	ADCSRA |= (1<<ADEN);	// Turn on ADC
-	ADCSRA |= (1<<ADSC);	// Do a preliminary conversion
+	initPortManipulator();
 	
 
 	_delay_ms(1000);
