@@ -138,10 +138,28 @@
     <Folder Include="src\Header Files" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="src\Header Files\portManipulator.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\Header Files\rollerShutter.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\Header Files\sensors.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\Header Files\UART.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\main.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\portManipulator.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\rollerShutter.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\sensors.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\UART.c">

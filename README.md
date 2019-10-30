@@ -14,6 +14,14 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+#### Groups
+
+To make serial-communication work using pySerial your local user has to be part of the `dialout` group. You can check this using the `groups` command. If not, add your user to the dialout group:
+
+```
+sudo usermod -a -G dialout USERNAME
+```
+
 #### Running
 
 ```
