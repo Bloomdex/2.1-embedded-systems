@@ -30,9 +30,6 @@ void transmitData(int data) {
 
 // Receive data (from Realterm)
 unsigned char receiveData(void) {
-	// Wait for data to be received
-	while( !( UCSR0A & (1<<RXC0) ) );
-	
-	// Get and return received data from buffer
-	return UDR0;
+	// Get and return received data from buffer if any data has been sent, else return 0.
+	return (UCSR0A & (1<<RXC0)) ? UDR0 : 0;
 }
