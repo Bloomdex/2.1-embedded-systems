@@ -19,10 +19,15 @@ void setup(void) {
 }
 
 void loop() {
+  if((int8_t)getTempReadingValid()) {
     addTemperatureToBuffer((int8_t)getTemperature());
+  }
+  
+  if((int8_t)getLightReadingValid()) {
     addLightToBuffer((int8_t)getLightIntensity());
-    
-    handleInstructions();
+  }
+
+  handleInstructions();
 }
 
 int main (void)

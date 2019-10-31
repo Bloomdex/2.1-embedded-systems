@@ -1,9 +1,21 @@
 #include "portManipulator.h"
 
 
+uint8_t tempReadingValid = 0;
+uint8_t lightReadingValid = 0;
+
+
 float getTemperature() {
 	// Get reading from temperature sensor, ADC PIN 0
 	int temperatureSensorInput = analogRead(0);
+	
+	// Set tempReadingValid to tell third parties if the reading is usable
+	if (temperatureSensorInput != 0) {
+		tempReadingValid = 1;
+	}
+	else {
+		tempReadingValid = 0;
+	}
 	
 	float temperature = (float)temperatureSensorInput / 1024;	// Find percentage of input reading: ranging from 0 to 1023
 	
@@ -14,11 +26,28 @@ float getTemperature() {
 	return temperature;
 }
 
+uint8_t getTempReadingValid() {
+	return tempReadingValid;
+}
+
+
 float getLightIntensity() {
 	// Get reading from light sensor, ADC PIN 1
 	int lightSensorInput = analogRead(1);
 	
+	// Set lightReadingValid to tell third parties if the reading is usable
+	if (lightSensorInput != 0) {
+		lightReadingValid = 1;
+	}
+	else {
+		lightReadingValid = 0;
+	}
+	
 	float lightIntensity = (float)lightSensorInput / 10;	// Divide intensity value by 10 to stay inside 127 range of int8
 	
 	return lightIntensity;
+}
+
+uint8_t getLightReadingValid() {
+	return lightReadingValid;
 }
