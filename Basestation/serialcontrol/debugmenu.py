@@ -51,7 +51,7 @@ class DebugMenu(object):
     class DebugTab:
         def __init__(self, module):
             self.module = module
-            self.name = module.com_device.name
+            self.name = module.name
 
             self.tab = QtWidgets.QWidget()
             self.tab.setObjectName("tab_" + self.name)
