@@ -162,6 +162,12 @@
     <Compile Include="src\rollerShutter.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\scheduler.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\scheduler.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\sensors.c">
       <SubType>compile</SubType>
     </Compile>
