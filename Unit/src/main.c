@@ -7,7 +7,7 @@
 #include "sensors.h"
 #include "rollerShutter.h"
 #include "portManipulator.h"
-
+#include "serial.h"
 
 void setup(void) {
 	DDRB = 0xFF;
@@ -15,16 +15,14 @@ void setup(void) {
 	initUART();
 	initPortManipulator();
 	
-
 	_delay_ms(1000);
 }
 
 void loop() {
-	int8_t temperature = (int8_t)getTemperature();
-	int8_t lightIntensity = (int8_t)getLightIntensity();
-	
-	transmitData(temperature);
-	transmitData(lightIntensity);
+    addTemperatureToBuffer((int8_t)getTemperature());
+    addLightToBuffer((int8_t)getLightIntensity());
+    
+    handleInstructions();
 }
 
 int main (void)
