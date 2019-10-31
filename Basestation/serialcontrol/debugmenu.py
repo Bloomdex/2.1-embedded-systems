@@ -27,6 +27,7 @@ class DebugMenu(object):
     def add_tab(self, module):
         tab = DebugMenu.DebugTab(module)
         tab.button_connection.clicked.connect(tab.handle_connection)
+        tab.button_send_hex.clicked.connect(tab.send_hex_data)
 
         self.tabs.append(tab)
         self.tab_com_devices.addTab(tab.tab, "")
@@ -72,11 +73,14 @@ class DebugMenu(object):
 
             horizontal_layout.addWidget(self.button_connection)
 
-            spinbox_hex = QtWidgets.QSpinBox(self.tab)
-            spinbox_hex.setMaximum(255)
-            spinbox_hex.setDisplayIntegerBase(16)
-            spinbox_hex.setObjectName("spinbox_hex")
-            horizontal_layout.addWidget(spinbox_hex)
+            self.spinbox_value = 0x00
+
+            self.spinbox_hex = QtWidgets.QSpinBox(self.tab)
+            self.spinbox_hex.setMaximum(255)
+            self.spinbox_hex.setDisplayIntegerBase(16)
+            self.spinbox_hex.setObjectName("spinbox_hex")
+            self.spinbox_hex.valueChanged.connect(lambda x: self.read_hex_spinbox_value())
+            horizontal_layout.addWidget(self.spinbox_hex)
 
             self.button_send_hex = QtWidgets.QPushButton(self.tab)
             self.button_send_hex.setObjectName("button_send_hex")
@@ -86,6 +90,9 @@ class DebugMenu(object):
 
             grid_layout_2.addLayout(vertical_layout, 0, 0, 1, 1)
 
+        def read_hex_spinbox_value(self):
+            self.spinbox_value = self.spinbox_hex.value()
+
         def handle_connection(self):
             if self.module.is_connected:
                 self.module.close_connection()
@@ -93,6 +100,9 @@ class DebugMenu(object):
                 self.module.open_connection()
 
             self.set_button_connect_name(self.module.is_connected)
+
+        def send_hex_data(self):
+            self.module.send_data(self.spinbox_value)
 
         def set_button_connect_name(self, is_connected):
             if is_connected:
@@ -102,4 +112,4 @@ class DebugMenu(object):
 
         def update_data_display(self):
             if self.module.data_is_updated:
-                self.text_received.setText('\n'.join([value.hex() for value in self.module.data]))
+                self.text_received.setText(' '.join([value.hex() for value in self.module.data]))

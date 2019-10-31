@@ -54,6 +54,10 @@ class Module:
         self.ser.close()
         self.is_connected = False
 
+    def send_data(self, hex_byte):
+        if self.is_connected:
+            self.ser.write(bytearray([hex_byte]))
+
     class ReadThread(QtCore.QThread):
         def __init__(self, module):
             QtCore.QThread.__init__(self)
