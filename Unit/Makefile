@@ -3,15 +3,15 @@ MCU=atmega328p
 F_CPU=16000000
 CC=avr-gcc
 OBJCOPY=avr-objcopy
-CFLAGS=-Os -I. -I../include -Wall -gdwarf-2
+CFLAGS=-Os -I. -Isrc/Header\ Files/ -Wall -gdwarf-2
 MAIN=main
+SRC=$(wildcard src/*.c)
 VCD_OUTPUT=output.vcd
 COM=/dev/ttyACM0
 
-all:
+all: $(SRC)
 	mkdir -p bin
-	$(CC) $(CFLAGS) -DF_CPU=$(F_CPU) -mmcu=$(MCU) -c -o bin/$(MAIN).o src/$(MAIN).c
-	$(CC) -DF_CPU=$(F_CPU) -mmcu=$(MCU) -o bin/$(MAIN).elf bin/$(MAIN).o
+	$(CC) $(CFLAGS) -DF_CPU=$(F_CPU) -mmcu=$(MCU) $(SRC) -o bin/$(MAIN).elf
 	$(OBJCOPY) -O ihex bin/$(MAIN).elf bin/$(MAIN).hex
 
 debug:
