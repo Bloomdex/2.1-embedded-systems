@@ -21,9 +21,13 @@ void setup(void) {
 
 void loop() {
 	int8_t temperature = (int8_t)getTemperature();
+	int8_t tempReadingValid = (int8_t)getTempReadingValid();
 	int8_t lightIntensity = (int8_t)getLightIntensity();
+	int8_t ligtReadingValid = (int8_t)getLightReadingValid();
 	
+	//transmitData(tempReadingValid);
 	transmitData(temperature);
+	//transmitData(ligtReadingValid);
 	transmitData(lightIntensity);
 }
 

@@ -30,6 +30,25 @@ source venv/bin/activate
 python3 main.py
 ```
 
+### Windows
+
+#### Installing
+
+```
+cd Basestation/
+python -m venv venv
+venv\bin\activate  
+pip install -r requirements.txt
+```
+
+#### Running
+
+```
+cd Basestation/
+venv\bin\activate  
+python main.py
+```
+
 ## Generating Unit Firmware
 
 ### Linux (Debian-based)
@@ -49,3 +68,7 @@ sudo apt install avrdude
 cd Unit/
 make COM=/dev/ttyACM0 flash # where ttyACM0 is your com-dev
 ```
+
+## Arduino schematics
+
+![](https://i.imgur.com/XjvvlBU.png)
