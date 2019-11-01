@@ -11,8 +11,8 @@ void initUART(void) {
 	// disable U2X mode
 	UCSR0A = 0;
 	
-	// enable transmitter and receiver
-	UCSR0B = (1<<RXEN0)|(1<<TXEN0);
+	// enable transmitter, receiver and interrupt for rx
+	UCSR0B = (1<<RXEN0)|(1<<TXEN0)|(1<<RXCIE0);
 	
 	// set frame format : asynchronous, 8 data bits, 1 stop bit, no parity
 	UCSR0C = _BV(UCSZ01) | _BV(UCSZ00);
@@ -26,10 +26,4 @@ void transmitData(int data) {
 	
 	// send the data
 	UDR0 = data;
-}
-
-// Receive data (from Realterm)
-unsigned char receiveData(void) {
-	// Get and return received data from buffer if any data has been sent, else return 0.
-	return (UCSR0A & (1<<RXC0)) ? UDR0 : 0;
 }
