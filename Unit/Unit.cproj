@@ -153,6 +153,9 @@
     <Compile Include="src\Header Files\UART.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\Header Files\scheduler.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\main.c">
       <SubType>compile</SubType>
     </Compile>
@@ -163,9 +166,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\scheduler.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\scheduler.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\sensors.c">
