@@ -5,6 +5,7 @@
 
 
 uint8_t animationActive = 0;
+uint8_t animationState = 0;
 
 
 void setRollerShutterClosed() {
@@ -27,12 +28,12 @@ void setRollerShutterStill() {
 
 void rollerShutterAnimate() {
 	if(animationActive == 1) {
-		digitalWrite(&PORTB, 0x0F, 0x02);
-		SCH_Add_Task(&rollerShutterAnimate_part_2, 100, 0); // add task with delay 100 ticks, 1 tick is 10ms
+		if (animationState == 0) {
+			digitalWrite(&PORTB, 0x0F, 0x02);
+			animationState = 1;
+		} else {
+			digitalWrite(&PORTB, 0x0F, 0x04);
+			animationState = 0;
+		}
 	}
-}
-
-void rollerShutterAnimate_part_2(void)
-{
-	digitalWrite(&PORTB, 0x0F, 0x04);
 }
