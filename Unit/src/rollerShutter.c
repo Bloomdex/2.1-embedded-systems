@@ -1,3 +1,6 @@
+#include "rollerShutter.h"
+
+#include "scheduler.h"
 #include "portManipulator.h"
 
 #define F_CPU 16E6    // Frequency definition for delay.h
@@ -9,13 +12,12 @@ uint8_t animationState = 0;
 
 
 void setRollerShutterClosed() {
-	digitalWrite('B', 0x0F, 0x08);
+	digitalWrite(&PORTB, 0x0F, (1 << PINB3));
 }
 
 void setRollerShutterOpen() {
-	digitalWrite('B', 0x0F, 0x01);
+	digitalWrite(&PORTB, 0x0F, (1 << PINB0));
 }
-
 
 void setRollerShutterMoving() {
 	animationActive = 1;
@@ -25,6 +27,10 @@ void setRollerShutterStill() {
 	animationActive = 0;
 }
 
+void rollerShutterAnimate_part_2(void)
+{
+	digitalWrite(&PORTB, 0x0F, (1 << PINB2));
+}
 
 void rollerShutterAnimate() {
 	if(animationActive == 1) {

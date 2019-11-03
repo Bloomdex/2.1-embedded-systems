@@ -1,7 +1,8 @@
+#include "serial.h"
+
 #include <avr/io.h>
 #include <string.h>
 #include "UART.h"
-#include "serial.h"
 
 // Queue for received data.
 volatile unsigned char received_data[RECEIVED_DATA_SIZE];
