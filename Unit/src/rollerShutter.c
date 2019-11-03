@@ -28,8 +28,11 @@ void setRollerShutterStill() {
 void rollerShutterAnimate() {
 	if(animationActive == 1) {
 		digitalWrite(&PORTB, 0x0F, 0x02);
-		_delay_ms(1000);
-		digitalWrite(&PORTB, 0x0F, 0x04);
-		_delay_ms(1000);
+		SCH_Add_Task(&rollerShutterAnimate_part_2, 100, 0); // add task with delay 100 ticks, 1 tick is 10ms
 	}
+}
+
+void rollerShutterAnimate_part_2(void)
+{
+	digitalWrite(&PORTB, 0x0F, 0x04);
 }
