@@ -1,4 +1,5 @@
 #include "scheduler.h"
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
@@ -163,8 +164,8 @@ void SCH_Init_T1(void)
 	// this is where you can change the periods
 	// for reference on timer modes go to: page 136 of the atmega328p datasheet
 	OCR1A = (uint16_t)625;					// 10ms = (256/16.000.000) * 625
-	TCCR1B = (1 << CS12) | (1 << WGM12);	// CS12:CS10 = 100 means prescaler is 256
-											// WGM13:WGM10 = 0100 means CTC (clear timer on compare) mode
+	TCCR1B = (1 << CS12) | (1 << WGM12);	// CS12:CS10 = 0b100 means prescaler is 256
+											// WGM13:WGM10 = 0b0100 means CTC (clear timer on compare) mode
 	TIMSK1 = 1 << OCIE1A;					// Timer 1 Output Compare A Match Interrupt Enable
 }
 
