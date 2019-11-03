@@ -5,6 +5,7 @@ void setRollerShutterClosed();
 void setRollerShutterOpen();
 void setRollerShutterMoving();
 void setRollerShutterStill();
+void rollerShutterAnimate_part_2(void);
 void rollerShutterAnimate();
 
 #endif /* ROLLERSHUTTER_H_ */

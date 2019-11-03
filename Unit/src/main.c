@@ -1,3 +1,5 @@
+#include "main.h"
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
@@ -31,7 +33,7 @@ void init_SCH(void)
 	SCH_Add_Task(&temperature_task, 0, TEMPERATURE_TASK_PERIOD);
 	SCH_Add_Task(&light_task, 0, LIGHT_TASK_PERIOD);
 	SCH_Add_Task(&rollerShutterAnimate, 0, 200);
-	SCH_Add_Task(&handleInstructions, 0, 5)
+	SCH_Add_Task(&handleInstructions, 0, 5);
 }
 
 void temperature_task(void)

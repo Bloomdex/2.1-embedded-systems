@@ -1,3 +1,5 @@
+#include "sensors.h"
+
 #include "portManipulator.h"
 
 
@@ -17,7 +19,6 @@ float getTemperature() {
 	
 	return temperature;
 }
-
 
 float getLightIntensity() {
 	// Get reading from light sensor, ADC PIN 1
