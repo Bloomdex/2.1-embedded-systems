@@ -284,25 +284,7 @@ class Ui_SubWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.Data), _translate("SubWindow", "Data"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.Status), _translate("SubWindow", "Status"))
         self.sunBlindName.setText(_translate("SubWindow", "Unit " + str(self.unit)))
-
-        self.tableWidget.setSortingEnabled(True)
-        item = self.tableWidget.verticalHeaderItem(0)
-        item.setText(_translate("SubWindow", "light sensor"))
-        item = self.tableWidget.verticalHeaderItem(1)
-        item.setText(_translate("SubWindow", "temperature sensor"))
-        item = self.tableWidget.verticalHeaderItem(2)
-        item.setText(_translate("SubWindow", "ultrasoon sensor"))
-        item = self.tableWidget.verticalHeaderItem(3)
-        item.setText(_translate("SubWindow", "sun blind"))
-        item = self.tableWidget.horizontalHeaderItem(0)
-        item.setText(_translate("SubWindow", "Sensor"))
-        item = self.tableWidget.horizontalHeaderItem(1)
-        item.setText(_translate("SubWindow", "Status"))
-        item = self.tableWidget.horizontalHeaderItem(2)
-        item.setText(_translate("SubWindow", "Sensor value"))
-        __sortingEnabled = self.tableWidget.isSortingEnabled()
-        self.tableWidget.setSortingEnabled(False)
-
+        self.update_status()
 
     def set_status(self):
         if units.Units.get_status(self.unit) == "open":
@@ -353,7 +335,6 @@ class Ui_SubWindow(object):
         item = self.tableWidget.item(3, 2)
         item.setText(_translate("SubWindow", "NA"))
         self.tableWidget.update()
-
 
     def update(self):
         self.update_graph()

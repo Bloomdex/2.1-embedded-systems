@@ -49,7 +49,7 @@ class SunBlindModel:
         self.status_ultrasoon_sensor = status
 
     def set_status_sun_blind(self, status):
-        self.status_sun_blindr = status
+        self.status_sun_blind = status
 
     def roll_out(self, unit):
         self.status = "open"
@@ -102,3 +102,28 @@ class SunBlindModel:
             self.data_temp.pop(0)
             self.data_light.pop(0)
 
+    def add_new_data(self, data):
+        if 'Temperature' in data:
+            for temp in data['Temperature']:
+                self.data_temp.append(temp)
+                if len(self.data_temp) > 100:
+                    self.data_temp.pop(0)
+        if 'Light' in data:
+            for light in data['Light']:
+                self.data_light.append(light)
+                if len(self.data_light) > 100:
+                    self.data_light.pop(0)
+        if 'Ultrasoon' in data:
+            for ultrasoon in data['ultrasoon']:
+                self.data_ultrasoon.append(ultrasoon)
+                if len(self.data_ultrasoon) > 100:
+                    self.data_ultrasoon.pop(0)
+        if 'Status' in data:
+            if 'SunBlind' in data['Status']:
+                self.status_sun_blind = data['Status']['SunBlind']
+            if 'Temperature' in data['Status']:
+                self.status_temp_sensor = data['Status']['Temperature']
+            if 'Light' in data['Status']:
+                self.status_light_sensor = data['Status']['Light']
+            if 'Ultrasoon' in data['Status']:
+                self.status_ultrasoon_sensor = data['Status']['Ultrasoon']
