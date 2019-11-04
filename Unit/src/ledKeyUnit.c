@@ -8,9 +8,9 @@
 #define HIGH 0x1
 #define LOW  0x0
 
-const uint8_t data = 7;
+const uint8_t data = 5;
 const uint8_t clock = 6;
-const uint8_t strobe = 5;
+const uint8_t strobe = 7;
 
 
 void initLedKeyUnit() {
