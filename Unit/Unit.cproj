@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="14.0">
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
@@ -138,6 +138,12 @@
     <Folder Include="src\Header Files" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="src\Header Files\ledKeyUnit.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\Header Files\main.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\Header Files\portManipulator.h">
       <SubType>compile</SubType>
     </Compile>
@@ -154,6 +160,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\Header Files\scheduler.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\ledKeyUnit.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\main.c">

@@ -71,4 +71,4 @@ make COM=/dev/ttyACM0 flash # where ttyACM0 is your com-dev
 
 ## Arduino schematics
 
-![](https://i.imgur.com/XjvvlBU.png)
+![](https://i.imgur.com/SHQZP8V.png)
