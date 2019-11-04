@@ -12,15 +12,19 @@
 #include "portManipulator.h"
 #include "serial.h"
 #include "scheduler.h"
+#include "ledKeyUnit.h"
 
 #define TEMPERATURE_TASK_PERIOD 100
 #define LIGHT_TASK_PERIOD 50
+#define LEDKEYUNIT_TASK_PERIOD 50
 
 void setup(void) {
 	DDRB = 0xFF;
+	DDRD = (1 << PIND5) | (1 << PIND6) | (1 << PIND7);
 	
 	initUART();
 	initPortManipulator();
+	initLedKeyUnit();
 	init_SCH();
 
 	_delay_ms(1000);
@@ -32,6 +36,7 @@ void init_SCH(void)
 	
 	SCH_Add_Task(&temperature_task, 0, TEMPERATURE_TASK_PERIOD);
 	SCH_Add_Task(&light_task, 0, LIGHT_TASK_PERIOD);
+	SCH_Add_Task(&ledKeyUnit_task, 0, LEDKEYUNIT_TASK_PERIOD);
 	SCH_Add_Task(&rollerShutterAnimate, 0, 100);
 	SCH_Add_Task(&handleInstructions, 0, 5);
 }
@@ -50,7 +55,14 @@ void light_task(void)
 		addLightToBuffer(lightReading);
 }
 
-int main (void)
+void ledKeyUnit_task(void)
+{
+	int8_t temperatureReading = (int8_t)getTemperature();
+	int8_t lightReading = (int8_t)getLightIntensity();
+	updateLedKeyUnit(temperatureReading, lightReading);
+}
+
+int main(void)
 {
 	setup();
 	setRollerShutterMoving();
