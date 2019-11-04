@@ -1,7 +1,6 @@
 Basestation/venv/
 Basestation/.idea/
-Basestation/__pycache__/
-Basestation/serialcontrol/__pycache__/
+**/__pycache__/
 Unit/bin/
 Unit/Debug/
 Unit/Unit.componentinfo.xml
