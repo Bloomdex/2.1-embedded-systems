@@ -28,6 +28,7 @@ class DebugMenu(object):
         tab = DebugMenu.DebugTab(module)
         tab.button_connection.clicked.connect(tab.handle_connection)
         tab.button_send_hex.clicked.connect(tab.send_hex_data)
+        tab.button_decode_signal.clicked.connect(tab.decode_hex_data)
 
         self.tabs.append(tab)
         self.tab_com_devices.addTab(tab.tab, "")
@@ -42,6 +43,7 @@ class DebugMenu(object):
         tab.text_received.setText("")
         tab.button_connection.setText(_translate("Form", "Connect"))
         tab.button_send_hex.setText(_translate("Form", "Send"))
+        tab.button_decode_signal.setText(_translate("Form", "Decode"))
         self.tab_com_devices.setTabText(self.tab_com_devices.indexOf(tab.tab), _translate("Form", tab.name))
 
     def retranslate_ui(self, form):
@@ -82,10 +84,15 @@ class DebugMenu(object):
             self.spinbox_hex.valueChanged.connect(lambda x: self.read_hex_spinbox_value())
             horizontal_layout.addWidget(self.spinbox_hex)
 
+            self.button_decode_signal = QtWidgets.QPushButton(self.tab)
+            self.button_decode_signal.setObjectName("button_decode_signal")
+
             self.button_send_hex = QtWidgets.QPushButton(self.tab)
             self.button_send_hex.setObjectName("button_send_hex")
 
+            horizontal_layout.addWidget(self.button_decode_signal)
             horizontal_layout.addWidget(self.button_send_hex)
+
             vertical_layout.addLayout(horizontal_layout)
 
             grid_layout_2.addLayout(vertical_layout, 0, 0, 1, 1)
@@ -101,6 +108,9 @@ class DebugMenu(object):
 
             self.set_button_connect_name(self.module.is_connected)
 
+        def decode_hex_data(self):
+            self.module.decode_retrieved_data()
+
         def send_hex_data(self):
             self.module.send_data(self.spinbox_value)
 
@@ -112,4 +122,4 @@ class DebugMenu(object):
 
         def update_data_display(self):
             if self.module.data_is_updated:
-                self.text_received.setText(' '.join([value.hex() for value in self.module.data]))
+                self.text_received.setText(' '.join([f'{value:02x}'.upper() for value in self.module.data]))
