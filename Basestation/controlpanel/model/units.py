@@ -5,9 +5,10 @@ class Units:
     units = []
 
     @staticmethod
-    def fill_units():
-        for x in range(0, 10):
-            Units.units.append(sunblindmodel.SunBlindModel())
+    def fill_units(arduinos):
+        for arduino in arduinos:
+            arduinos[arduino].reader.start()
+            Units.units.append(sunblindmodel.SunBlindModel(arduinos[arduino]))
 
     @staticmethod
     def set_unit_min(unit, value):

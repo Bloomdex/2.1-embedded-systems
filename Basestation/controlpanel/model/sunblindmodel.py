@@ -2,8 +2,9 @@ import controlpanel.view.setupwindows as setupwindows
 
 import random
 
+
 class SunBlindModel:
-    def __init__(self):
+    def __init__(self, module):
         self.min_roll_out = 0
         self.max_roll_out = 2.5
         self.status_sun_blind = "open"
@@ -14,6 +15,7 @@ class SunBlindModel:
         self.data_temp = []
         self.data_light = []
         self.data_ultrasoon = []
+        self.module = module
 
     def set_min_roll_out(self, min_roll_out):
         if min_roll_out < self.max_roll_out:
@@ -92,16 +94,12 @@ class SunBlindModel:
             return "Not Available"
 
     def generate_new_data(self):
-        if len(self.data_x) != 0:
-            self.data_x.append(self.data_x[len(self.data_x) - 1] + 1)
-        else:
-            self.data_x.append(0)
-        self.data_temp.append(random.randint(10, 50))
-        self.data_light.append(random.randint(40, 100))
-        if len(self.data_x) > 100:
-            self.data_x.pop(0)
-            self.data_temp.pop(0)
-            self.data_light.pop(0)
+        received_data = self.module.decode_retrieved_data()
+        self.add_new_data(received_data)
+
+        # Sends instructions to module to return temperature and light
+        self.module.send_data(0xFD)  # Light
+        self.module.send_data(0xFE)  # Temperature
 
     def add_new_data(self, data):
         if 'Temperature' in data:

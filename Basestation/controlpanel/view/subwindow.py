@@ -125,12 +125,18 @@ class Ui_SubWindow(object):
         self.graph.addLegend()
         #self.legend = pg.LegendItem(offset=70)
         #self.legend.setParentItem(self.graph.getPlotItem())
-        self.graph_temp = self.graph.plotItem.plot(units.Units.get_data_x(self.unit),
-                                                   units.Units.get_data_temp(self.unit),
+
+        temperature_data = units.Units.get_data_temp(self.unit)
+        light_data = units.Units.get_data_light(self.unit)
+
+        # TODO: Replace x with something useful.
+        self.graph_temp = self.graph.plotItem.plot([*range(len(temperature_data))],
+                                                   temperature_data,
                                                    pen=self.pen, name="_Temperature")
-        self.graph_light = self.graph.plotItem.plot(units.Units.get_data_x(self.unit),
-                                                    units.Units.get_data_light(self.unit),
+        self.graph_light = self.graph.plotItem.plot([*range(len(light_data))],
+                                                    light_data,
                                                     pen=self.pen2, name="_Light")
+
         #self.legend.addItem(self.graph_light, '_light')
         #self.legend.addItem(self.graph_temp, '_temp')
 
@@ -302,8 +308,12 @@ class Ui_SubWindow(object):
 
     def update_graph(self):
         units.Units.generate_new_data(self.unit)
-        self.graph_temp.setData(x=units.Units.get_data_x(self.unit), y=units.Units.get_data_temp(self.unit))
-        self.graph_light.setData(x=units.Units.get_data_x(self.unit), y=units.Units.get_data_light(self.unit))
+
+        temperature_data = units.Units.get_data_temp(self.unit)
+        light_data = units.Units.get_data_light(self.unit)
+
+        self.graph_temp.setData(x=[*range(len(temperature_data))], y=temperature_data)
+        self.graph_light.setData(x=[*range(len(light_data))], y=light_data)
 
     def update_status(self):
         status = units.Units.get_status(self.unit)
