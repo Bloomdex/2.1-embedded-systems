@@ -1,13 +1,6 @@
-import os
-import threading
-import time
-import multiprocessing
-from concurrent.futures import thread
-
 from PyQt5 import QtCore, QtGui, QtWidgets
 import pyqtgraph as pg
-import random
-import ProjectEmbeddedSystems.Basestation.controlpanel.model.units as units
+import controlpanel.model.units as units
 
 
 class Ui_SubWindow(object):
@@ -15,11 +8,9 @@ class Ui_SubWindow(object):
         self.unit = unit
         SubWindow.setObjectName("SubWindow")
         SubWindow.setMinimumSize(450, 280)
-        SubWindow.setStyleSheet("background-color: rgb(255, 255, 255);")
         SubWindow.setWindowFlags(QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMaximizeButtonHint)
 
         self.centralwidget = QtWidgets.QWidget(SubWindow)
-        self.centralwidget.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.centralwidget.setObjectName("centralwidget")
         # gridLayout 1 and 2
         self.gridLayout_2 = QtWidgets.QGridLayout(self.centralwidget)
@@ -28,7 +19,6 @@ class Ui_SubWindow(object):
         self.gridLayout.setObjectName("gridLayout")
         # the maxInput
         self.maxInput = QtWidgets.QDoubleSpinBox(self.centralwidget)
-        self.maxInput.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.maxInput.setObjectName("maxInput")
         self.maxInput.setSingleStep(0.1)
         self.maxInput.setMinimum(0.0)
@@ -38,13 +28,11 @@ class Ui_SubWindow(object):
         self.gridLayout.addWidget(self.maxInput, 4, 0, 1, 1)
         # the downButton
         self.downButton = QtWidgets.QPushButton(self.centralwidget)
-        self.downButton.setStyleSheet("")
         self.downButton.setObjectName("downButton")
         self.downButton.clicked.connect(lambda x: units.Units.roll_out_unit(self.unit))
         self.gridLayout.addWidget(self.downButton, 4, 3, 1, 1)
         # the minInput
         self.minInput = QtWidgets.QDoubleSpinBox(self.centralwidget)
-        self.minInput.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.minInput.setObjectName("minInput")
         self.minInput.setSingleStep(0.1)
         self.minInput.setMinimum(0.0)
@@ -57,7 +45,6 @@ class Ui_SubWindow(object):
         self.gridLayout.addItem(spacerItem, 2, 2, 1, 1)
         # the setMaxButton
         self.setMaxButton = QtWidgets.QPushButton(self.centralwidget)
-        self.setMaxButton.setStyleSheet("")
         self.setMaxButton.setObjectName("setMaxButton")
         self.maxInputValue = self.maxInput.value()
         self.setMaxButton.clicked.connect(lambda x: units.Units.set_unit_max(self.unit, self.maxInputValue))
@@ -68,14 +55,12 @@ class Ui_SubWindow(object):
         # the setMinButton
         self.setMinButton = QtWidgets.QPushButton(self.centralwidget)
         self.setMinButton.setEnabled(True)
-        self.setMinButton.setStyleSheet("")
         self.setMinButton.setObjectName("setMinButton")
         self.minInputValue = self.minInput.value()
         self.setMinButton.clicked.connect(lambda x: units.Units.set_unit_min(self.unit, self.minInputValue))
         self.gridLayout.addWidget(self.setMinButton, 2, 1, 1, 1)
         # the upButton
         self.upButton = QtWidgets.QPushButton(self.centralwidget)
-        self.upButton.setStyleSheet("")
         self.upButton.setObjectName("upButton")
         self.upButton.clicked.connect(lambda x: units.Units.roll_in_unit(self.unit))
         self.gridLayout.addWidget(self.upButton, 2, 3, 1, 1)
@@ -87,21 +72,18 @@ class Ui_SubWindow(object):
         self.tabWidget.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         self.tabWidget.setFocusPolicy(QtCore.Qt.TabFocus)
         self.tabWidget.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
-        self.tabWidget.setStyleSheet("background: rgb(255, 255, 255)")
         self.tabWidget.setTabShape(QtWidgets.QTabWidget.Triangular)
         self.tabWidget.setElideMode(QtCore.Qt.ElideNone)
         self.tabWidget.setTabBarAutoHide(False)
         self.tabWidget.setObjectName("tabWidget")
         # the data tab and gridLayout 3
         self.Data = QtWidgets.QWidget()
-        self.Data.setStyleSheet("background : rgb(255, 255, 255);")
         self.Data.setObjectName("Data")
         self.gridLayout_3 = QtWidgets.QGridLayout(self.Data)
         self.gridLayout_3.setObjectName("gridLayout_3")
         self.tabWidget.addTab(self.Data, "")
         # the stauts tab and gridLayout 4
         self.Status = QtWidgets.QWidget()
-        self.Status.setStyleSheet("backgroundr: rgb(255, 255, 255);")
         self.Status.setObjectName("Status")
         self.gridLayout_4 = QtWidgets.QGridLayout(self.Status)
         self.gridLayout_4.setObjectName("gridLayout_4")
@@ -147,7 +129,6 @@ class Ui_SubWindow(object):
         font2.setWeight(50)
         font2.setStyleStrategy(QtGui.QFont.PreferAntialias)
         self.statusText.setFont(font2)
-        self.statusText.setStyleSheet("")
         self.statusText.setAlignment(QtCore.Qt.AlignHCenter)
         self.statusText.setText("Status")
         self.gridLayout_4.addWidget(self.statusText, 0, 0, 1, 1)
@@ -254,7 +235,6 @@ class Ui_SubWindow(object):
         font.setWeight(50)
         font.setStyleStrategy(QtGui.QFont.PreferAntialias)
         self.sunBlindName.setFont(font)
-        self.sunBlindName.setStyleSheet("")
         self.sunBlindName.setAlignment(QtCore.Qt.AlignBottom | QtCore.Qt.AlignHCenter)
         self.sunBlindName.setObjectName("sunblindName")
         self.gridLayout_2.addWidget(self.sunBlindName, 0, 1, 1, 1)

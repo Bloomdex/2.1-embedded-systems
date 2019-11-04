@@ -5,10 +5,9 @@ from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QMessageBox
 import sys
-import ProjectEmbeddedSystems.Basestation.controlpanel.view.mainwindow as mainwindow
-import ProjectEmbeddedSystems.Basestation.controlpanel.view.subwindow as subwindow
-import ProjectEmbeddedSystems.Basestation.controlpanel.model.units as units
-from multiprocessing import Process
+import controlpanel.view.mainwindow as mainwindow
+import controlpanel.view.subwindow as subwindow
+import controlpanel.model.units as units
 
 
 class MakeWindows:
