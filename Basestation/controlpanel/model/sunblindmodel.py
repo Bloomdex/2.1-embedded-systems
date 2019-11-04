@@ -1,4 +1,5 @@
-import ProjectEmbeddedSystems.Basestation.controlpanel.view.setupwindows as setupwindows
+import controlpanel.view.setupwindows as setupwindows
+
 import random
 
 class SunBlindModel:

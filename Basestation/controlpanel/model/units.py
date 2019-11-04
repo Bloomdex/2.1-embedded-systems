@@ -1,4 +1,4 @@
-import ProjectEmbeddedSystems.Basestation.controlpanel.model.sunblindmodel as sunblindmodel
+import controlpanel.model.sunblindmodel as sunblindmodel
 
 
 class Units:

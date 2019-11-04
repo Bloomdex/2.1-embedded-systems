@@ -4,9 +4,10 @@ from functools import partial
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMdiSubWindow
-import ProjectEmbeddedSystems.Basestation.controlpanel.view.subwindow as subwindow
-import ProjectEmbeddedSystems.Basestation.controlpanel.view.setupwindows as setupwindows
-import ProjectEmbeddedSystems.Basestation.controlpanel.model.units as units
+import controlpanel.view.subwindow as subwindow
+import controlpanel.view.setupwindows as setupwindows
+import controlpanel.model.units as units
+
 
 class Ui_MainWindow(object):
     def __init__(self, MainWindow):
