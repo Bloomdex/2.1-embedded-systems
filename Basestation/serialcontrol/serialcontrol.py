@@ -3,7 +3,7 @@ from PyQt5 import QtWidgets, QtCore
 from serial import SerialException
 import os
 import debugmenu
-
+import datareader
 
 class ModuleDetector:
     def __init__(self):
@@ -48,6 +48,7 @@ class Module:
         self.type = 'None'
         self.com_device = device
         self.data = []
+        self.retrieved_info = {}
         self.data_is_updated = False
         self.reader = Module.ReadThread(self)
         self.reader.start()
@@ -67,6 +68,14 @@ class Module:
         if self.is_connected:
             self.ser.write(bytearray([hex_byte]))
 
+    def decode_retrieved_data(self):
+        decoded_signal = datareader.DataReader.decode_and_return_data(self.data)
+        decoded_signal = dict((datareader.data_types[key], value) for (key, value) in decoded_signal.items())
+
+        self.data.clear()
+        self.retrieved_info = decoded_signal
+        print(self.retrieved_info)
+
     class ReadThread(QtCore.QThread):
         def __init__(self, module):
             QtCore.QThread.__init__(self)
@@ -79,7 +88,7 @@ class Module:
                 if self.module.is_connected:
                     try:
                         incoming_byte = self.module.ser.read()
-                        self.module.data.append(incoming_byte)
+                        self.module.data.append(int(incoming_byte.hex(), 16))
                         self.module.data_is_updated = True
                     except:
                         pass
