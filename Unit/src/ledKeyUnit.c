@@ -227,11 +227,12 @@ void updateChangingValues(int8_t valueToAdd) {
 			
 		// Update value by applying changes
 		int8_t newTempPreference = getUserTempPreference() + valueToAdd;
-		setUserTempPreference(newTempPreference);
+		if(newTempPreference >= 0 && newTempPreference <= 100)
+			setUserTempPreference(newTempPreference);
 		
 		// Compose lightPreference digit array
 		uint8_t changedValueDigitArray[4];
-		valToDigitsInArray(changedValueDigitArray, 4, newTempPreference);
+		valToDigitsInArray(changedValueDigitArray, 4, getUserTempPreference());
 		
 		// Compose array for display
 		appendTwoLedKeyUnitArrays(finalDigitArray, indicatorDigitArray, 4, changedValueDigitArray, 4);
@@ -246,7 +247,8 @@ void updateChangingValues(int8_t valueToAdd) {
 		
 		// Compose lightPreference digit array
 		uint8_t changedValueDigitArray[3];
-		valToDigitsInArray(changedValueDigitArray, 3, newLightPreference);
+		if(newLightPreference >= 0 && newLightPreference <= 100)
+			valToDigitsInArray(changedValueDigitArray, 3, getUserLightPreference());
 		
 		// Compose array for display
 		appendTwoLedKeyUnitArrays(finalDigitArray, indicatorDigitArray, 5, changedValueDigitArray, 3);
