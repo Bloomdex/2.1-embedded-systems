@@ -4,7 +4,7 @@
 #include <util/delay.h>
 
 #include "ledKeyUnit.h"
-#include "scheduler.h"
+#include "userPreferenceHandler.h"
 
 #define HIGH 0x1
 #define LOW  0x0
@@ -17,6 +17,9 @@ const uint8_t strobe = 7;
 uint8_t currentButtonReadings = 0;
 uint8_t lockDisplayUpdate = 0;
 uint8_t lockTickCount = 0;
+
+enum updateState {displayValues, changeValuesTemp, changeValuesLight};
+enum updateState currentUpdateState = displayValues;
 
 
 void initLedKeyUnit() {
@@ -158,6 +161,7 @@ uint8_t readButtons() {
 	return buttons;
 }
 
+
 void updateButtonReadings(uint8_t buttonReadings) {
 	// Check if reading is equal to one of the valid readings
 	uint8_t validReadings[4] = {1, 2, 16, 32};
@@ -169,20 +173,15 @@ void updateButtonReadings(uint8_t buttonReadings) {
 	}
 }
 
-enum updateState {displayValues, changeValues};
-enum updateState currentUpdateState = displayValues;
-
-enum changeValueState {changePrefferedTemp, changePrefferedLight};
-enum changeValueState currentChangeValueState;
-
 void updateLedKeyUnit(int8_t tempVal, uint8_t lightVal) {
 	transmitData(lockDisplayUpdate);
 	transmitData(lockTickCount);
 	
 	if(currentButtonReadings != 0) {	// If a button is pressed or it was locked previously
-		currentUpdateState = changeValues;
-		
-		currentButtonReadings = 0;	// Reset out buttons so this doesn't fire again without pressing
+		if(currentButtonReadings == 1 || currentButtonReadings == 2)
+			currentUpdateState = changeValuesTemp;
+		else if(currentButtonReadings == 16 || currentButtonReadings == 32)
+			currentUpdateState = changeValuesLight;
 		
 		// Make sure the display stays locked for x ticks
 		lockTickCount = 0;
@@ -191,7 +190,7 @@ void updateLedKeyUnit(int8_t tempVal, uint8_t lightVal) {
 	else if(lockDisplayUpdate == 0)
 		currentUpdateState = displayValues;
 		
-	if(currentUpdateState == changeValues) {
+	if(currentUpdateState == changeValuesTemp || currentUpdateState == changeValuesLight) {
 		// Update the changeValues state
 		lockTickCount += 1;	
 		
@@ -199,18 +198,68 @@ void updateLedKeyUnit(int8_t tempVal, uint8_t lightVal) {
 			lockDisplayUpdate = 0;
 		
 		// Actions for changeValues state
-		uint8_t testArr[8] = { 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40 };
-		sendArrayToLedKeyUnit(testArr);
+		if(currentUpdateState == changeValuesTemp) {
+			if(currentButtonReadings == 1)
+				updateChangingValues(-1);
+			else if(currentButtonReadings == 2)
+				updateChangingValues(1);
+		}
+		else if(currentUpdateState == changeValuesLight) {
+			if(currentButtonReadings == 16)
+			updateChangingValues(-1);
+			else if(currentButtonReadings == 32)
+			updateChangingValues(1);
+		}
+		
+		currentButtonReadings = 0;	// Reset out buttons so this doesn't fire again without pressing
 	}
 	else if(currentUpdateState == displayValues)
 		updateDisplayingValues(tempVal, lightVal);
 }
 
-uint8_t temperatureDigitArray[4];
-uint8_t lightIntensityDigitArray[4];
-uint8_t finalDigitArray[8];
+
+void updateChangingValues(int8_t valueToAdd) {
+	uint8_t finalDigitArray[8];
+	
+	if(currentUpdateState == changeValuesTemp) {
+		// Compose indicator digit array
+		uint8_t indicatorDigitArray[4] = { 0x78, 0x79, 0x37, 0x73 };	// Temp
+			
+		// Update value by applying changes
+		int8_t newTempPreference = getUserTempPreference() + valueToAdd;
+		setUserTempPreference(newTempPreference);
+		
+		// Compose lightPreference digit array
+		uint8_t changedValueDigitArray[4];
+		valToDigitsInArray(changedValueDigitArray, 4, newTempPreference);
+		
+		// Compose array for display
+		appendTwoLedKeyUnitArrays(finalDigitArray, indicatorDigitArray, 4, changedValueDigitArray, 4);
+	}
+	else if(currentUpdateState == changeValuesLight) {
+		// Compose indicator digit array
+		uint8_t indicatorDigitArray[5] = { 0x38, 0x10, 0x3D, 0x74, 0x78 }; // Light
+			
+		// Update value by applying changes
+		int8_t newLightPreference = getUserLightPreference() + valueToAdd;
+		setUserLightPreference(newLightPreference);
+		
+		// Compose lightPreference digit array
+		uint8_t changedValueDigitArray[3];
+		valToDigitsInArray(changedValueDigitArray, 3, newLightPreference);
+		
+		// Compose array for display
+		appendTwoLedKeyUnitArrays(finalDigitArray, indicatorDigitArray, 5, changedValueDigitArray, 3);
+	}
+	
+	sendArrayToLedKeyUnit(finalDigitArray);
+}
 
 void updateDisplayingValues(int8_t tempVal, uint8_t lightVal) {
+	uint8_t temperatureDigitArray[4];
+	uint8_t lightIntensityDigitArray[4];
+	uint8_t finalDigitArray[8];
+	
 	// Compose temperature digit array
 	valToDigitsInArray(temperatureDigitArray, 4, tempVal);
 
@@ -222,6 +271,7 @@ void updateDisplayingValues(int8_t tempVal, uint8_t lightVal) {
 
 	sendArrayToLedKeyUnit(finalDigitArray);
 }
+
 
 void sendArrayToLedKeyUnit(uint8_t array[]) {
 	// Setup
