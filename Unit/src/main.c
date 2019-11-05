@@ -13,10 +13,15 @@
 #include "serial.h"
 #include "scheduler.h"
 #include "ledKeyUnit.h"
+#include "userPreferenceHandler.h"
 
 #define TEMPERATURE_TASK_PERIOD 100
 #define LIGHT_TASK_PERIOD 50
 #define LEDKEYUNIT_TASK_PERIOD 50
+
+uint8_t eepromData = 0;
+uint8_t eepromData2 = 0;
+
 
 void setup(void) {
 	DDRB = 0xFF;
@@ -25,21 +30,25 @@ void setup(void) {
 	initUART();
 	initPortManipulator();
 	initLedKeyUnit();
+	initUserPreferenceHandler();
 	init_SCH();
 
 	_delay_ms(1000);
 }
 
+void tempTask(void);
+
 void init_SCH(void)
 {
 	SCH_Init_T1();
-	
+
 	SCH_Add_Task(&temperature_task, 0, TEMPERATURE_TASK_PERIOD);
 	SCH_Add_Task(&light_task, 0, LIGHT_TASK_PERIOD);
 	SCH_Add_Task(&ledKeyUnit_task, 0, LEDKEYUNIT_TASK_PERIOD);
 	SCH_Add_Task(&rollerShutterAnimate, 0, 100);
 	SCH_Add_Task(&handleInstructions, 0, 5);
 }
+
 
 void temperature_task(void)
 {
