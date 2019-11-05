@@ -19,9 +19,6 @@
 #define LIGHT_TASK_PERIOD 50
 #define LEDKEYUNIT_TASK_PERIOD 50
 
-uint8_t eepromData = 0;
-uint8_t eepromData2 = 0;
-
 
 void setup(void) {
 	DDRB = 0xFF;
