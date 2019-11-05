@@ -4,13 +4,19 @@
 #include <util/delay.h>
 
 #include "ledKeyUnit.h"
+#include "scheduler.h"
 
 #define HIGH 0x1
 #define LOW  0x0
+#define LEDKEYLOCKTICKS 5
 
 const uint8_t data = 5;
 const uint8_t clock = 6;
 const uint8_t strobe = 7;
+
+uint8_t currentButtonReadings = 0;
+uint8_t lockDisplayUpdate = 0;
+uint8_t lockTickCount = 0;
 
 
 void initLedKeyUnit() {
@@ -152,25 +158,52 @@ uint8_t readButtons() {
 	return buttons;
 }
 
+void updateButtonReadings(uint8_t buttonReadings) {
+	// Check if reading is equal to one of the valid readings
+	uint8_t validReadings[4] = {1, 2, 16, 32};
+	uint8_t readingValid = 0;	
+	
+	for (uint8_t i = 0; i < 4; i++) {
+		if(buttonReadings == validReadings[i])
+			currentButtonReadings = buttonReadings;
+	}
+}
 
-enum state {displayingValues, changingValues};
-enum state ledKeyUnitState = displayingValues;
+enum updateState {displayValues, changeValues};
+enum updateState currentUpdateState = displayValues;
 
-#include "UART.h"
+enum changeValueState {changePrefferedTemp, changePrefferedLight};
+enum changeValueState currentChangeValueState;
 
 void updateLedKeyUnit(int8_t tempVal, uint8_t lightVal) {
-	//if(readButtons() != 0)
-	//	ledKeyUnitState = changingValues;
-	//else
-	//	ledKeyUnitState = displayingValues;
+	transmitData(lockDisplayUpdate);
+	transmitData(lockTickCount);
 	
-	
-	//uint8_t testArr[8] = { 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40 };
+	if(currentButtonReadings != 0) {	// If a button is pressed or it was locked previously
+		currentUpdateState = changeValues;
 		
-	if (ledKeyUnitState == displayingValues)
+		currentButtonReadings = 0;	// Reset out buttons so this doesn't fire again without pressing
+		
+		// Make sure the display stays locked for x ticks
+		lockTickCount = 0;
+		lockDisplayUpdate = 1;
+	}
+	else if(lockDisplayUpdate == 0)
+		currentUpdateState = displayValues;
+		
+	if(currentUpdateState == changeValues) {
+		// Update the changeValues state
+		lockTickCount += 1;	
+		
+		if(lockTickCount >= LEDKEYLOCKTICKS)
+			lockDisplayUpdate = 0;
+		
+		// Actions for changeValues state
+		uint8_t testArr[8] = { 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40 };
+		sendArrayToLedKeyUnit(testArr);
+	}
+	else if(currentUpdateState == displayValues)
 		updateDisplayingValues(tempVal, lightVal);
-	//else if (ledKeyUnitState == changingValues)
-	//	sendArrayToLedKeyUnit(testArr);
 }
 
 uint8_t temperatureDigitArray[4];
@@ -178,11 +211,6 @@ uint8_t lightIntensityDigitArray[4];
 uint8_t finalDigitArray[8];
 
 void updateDisplayingValues(int8_t tempVal, uint8_t lightVal) {
-	// Setup
-	sendCommand(0x40);	// auto-increment address
-	write(strobe, LOW);
-	shiftOut(0xc0);		// set starting address = 0
-	
 	// Compose temperature digit array
 	valToDigitsInArray(temperatureDigitArray, 4, tempVal);
 
@@ -196,9 +224,16 @@ void updateDisplayingValues(int8_t tempVal, uint8_t lightVal) {
 }
 
 void sendArrayToLedKeyUnit(uint8_t array[]) {
+	// Setup
+	sendCommand(0x40);	// auto-increment address
+	write(strobe, LOW);
+	shiftOut(0xc0);		// set starting address = 0
+	
 	// Send the values to the unit's display
 	for(uint8_t position = 0; position < 8; position++) {
 		shiftOut(array[position]);
 		shiftOut(0x00);
 	}
+	
+	write(strobe, HIGH);
 }
