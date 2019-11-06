@@ -12,7 +12,7 @@ void initUserPreferenceHandler() {
 	int8_t savedPrefferedTemperature = (int8_t)eepromRead_byte(PREFERRED_TEMPERATURE_ADDRESS);
 	int8_t savedPrefferedLightIntensity = (int8_t)eepromRead_byte(PREFERRED_LIGHT_ADDRESS);
 	
-	// Check if the saved values are genuine since return -1 when they're not
+	// Check if the saved values are genuine since eeprom returns -1 when they're not
 	if(savedPrefferedTemperature != -1)
 		prefferedTemperature = savedPrefferedTemperature;
 	
