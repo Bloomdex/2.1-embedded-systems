@@ -196,20 +196,16 @@ void updateLedKeyUnit(int8_t tempVal, uint8_t lightVal) {
 		
 		if(lockTickCount >= LEDKEYLOCKTICKS)
 			lockDisplayUpdate = 0;
+			
+		uint8_t valueToAdd = 0;
 		
-		// Actions for changeValues state
-		if(currentUpdateState == changeValuesTemp) {
-			if(currentButtonReadings == 1)
-				updateChangingValues(-1);
-			else if(currentButtonReadings == 2)
-				updateChangingValues(1);
-		}
-		else if(currentUpdateState == changeValuesLight) {
-			if(currentButtonReadings == 16)
-			updateChangingValues(-1);
-			else if(currentButtonReadings == 32)
-			updateChangingValues(1);
-		}
+		// Determine what action to do
+		if(currentButtonReadings == 1 || currentButtonReadings == 16)
+			valueToAdd = -1;
+		else if(currentButtonReadings == 2 || currentButtonReadings == 32)
+			valueToAdd = 1;
+		
+		updateChangingValues(valueToAdd, tempVal, lightVal);
 		
 		currentButtonReadings = 0;	// Reset out buttons so this doesn't fire again without pressing
 	}
@@ -218,10 +214,10 @@ void updateLedKeyUnit(int8_t tempVal, uint8_t lightVal) {
 }
 
 
-void updateChangingValues(int8_t valueToAdd) {
+void updateChangingValues(int8_t valueToAdd, int8_t tempVal, uint8_t lightVal) {
 	uint8_t finalDigitArray[8];
 	
-	if(currentUpdateState == changeValuesTemp) {
+	if(currentUpdateState == changeValuesTemp && tempVal != -1) {
 		// Compose indicator digit array
 		uint8_t indicatorDigitArray[4] = { 0x78, 0x79, 0x37, 0x73 };	// Temp
 			
@@ -236,8 +232,10 @@ void updateChangingValues(int8_t valueToAdd) {
 		
 		// Compose array for display
 		appendTwoLedKeyUnitArrays(finalDigitArray, indicatorDigitArray, 4, changedValueDigitArray, 4);
+		
+		sendArrayToLedKeyUnit(finalDigitArray);
 	}
-	else if(currentUpdateState == changeValuesLight) {
+	else if(currentUpdateState == changeValuesLight && lightVal != -1) {
 		// Compose indicator digit array
 		uint8_t indicatorDigitArray[5] = { 0x38, 0x10, 0x3D, 0x74, 0x78 }; // Light
 			
@@ -252,9 +250,9 @@ void updateChangingValues(int8_t valueToAdd) {
 		
 		// Compose array for display
 		appendTwoLedKeyUnitArrays(finalDigitArray, indicatorDigitArray, 5, changedValueDigitArray, 3);
-	}
 	
-	sendArrayToLedKeyUnit(finalDigitArray);
+		sendArrayToLedKeyUnit(finalDigitArray);
+	}
 }
 
 void updateDisplayingValues(int8_t tempVal, uint8_t lightVal) {
@@ -263,10 +261,16 @@ void updateDisplayingValues(int8_t tempVal, uint8_t lightVal) {
 	uint8_t finalDigitArray[8];
 	
 	// Compose temperature digit array
-	valToDigitsInArray(temperatureDigitArray, 4, tempVal);
+	if(tempVal != -1)
+		valToDigitsInArray(temperatureDigitArray, 4, tempVal);
+	else
+		fillArrayWithGiven(temperatureDigitArray, 0, 4, 0x00);
 
 	// Compose lightIntensity digit array
-	valToDigitsInArray(lightIntensityDigitArray, 4, lightVal);
+	if(lightVal != -1)
+		valToDigitsInArray(lightIntensityDigitArray, 4, lightVal);
+	else
+		fillArrayWithGiven(lightIntensityDigitArray, 0, 4, 0x00);
 	
 	// Compose array for display
 	appendTwoLedKeyUnitArrays(finalDigitArray, temperatureDigitArray, 4, lightIntensityDigitArray, 4);

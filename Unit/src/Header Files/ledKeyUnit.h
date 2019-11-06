@@ -19,7 +19,7 @@ uint8_t readButtons();
 void updateButtonReadings(uint8_t buttonReadings);
 void updateLedKeyUnit(int8_t tempVal, uint8_t lightVal);
 
-void updateChangingValues(int8_t valueToAdd);
+void updateChangingValues(int8_t valueToAdd, int8_t tempVal, uint8_t lightVal);
 void updateDisplayingValues(int8_t tempVal, uint8_t lightVal);
 
 void sendArrayToLedKeyUnit(uint8_t array[]);
