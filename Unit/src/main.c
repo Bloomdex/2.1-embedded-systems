@@ -34,8 +34,6 @@ void setup(void) {
 	_delay_ms(1000);
 }
 
-void tempTask(void);
-
 void init_SCH(void)
 {
 	SCH_Init_T1();
@@ -47,7 +45,6 @@ void init_SCH(void)
 	SCH_Add_Task(&rollerShutterAnimate, 0, 100);
 	SCH_Add_Task(&handleInstructions, 0, 5);
 }
-
 
 void temperature_task(void)
 {

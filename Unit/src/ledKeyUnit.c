@@ -173,10 +173,11 @@ void updateButtonReadings(uint8_t buttonReadings) {
 	}
 }
 
-void updateLedKeyUnit(int8_t tempVal, uint8_t lightVal) {
-	transmitData(lockDisplayUpdate);
-	transmitData(lockTickCount);
+void updateLedKeyUnit(int8_t tempVal, uint8_t lightVal) {	
+	// Activate led&key unit in case it just connected
+	initLedKeyUnit();
 	
+	// Determine the current state of the led&key unit
 	if(currentButtonReadings != 0) {	// If a button is pressed or it was locked previously
 		if(currentButtonReadings == 1 || currentButtonReadings == 2)
 			currentUpdateState = changeValuesTemp;
