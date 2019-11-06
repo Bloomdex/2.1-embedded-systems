@@ -257,7 +257,6 @@ void updateChangingValues(int8_t valueToAdd, int8_t tempVal, uint8_t lightVal) {
 	}
 }
 
-#include "UART.h"
 void updateDisplayingValues(int8_t tempVal, int8_t lightVal) {
 	uint8_t temperatureDigitArray[4];
 	uint8_t lightIntensityDigitArray[4];
@@ -266,18 +265,14 @@ void updateDisplayingValues(int8_t tempVal, int8_t lightVal) {
 	// Compose temperature digit array
 	if(tempVal != INVALID_READING_VALUE)
 		valToDigitsInArray(temperatureDigitArray, 4, tempVal);
-	else {
-		transmitData(0);
+	else
 		fillArrayWithGiven(temperatureDigitArray, 0, 4, 0x00);
-	}
 
 	// Compose lightIntensity digit array
 	if(lightVal != INVALID_READING_VALUE)
 		valToDigitsInArray(lightIntensityDigitArray, 4, lightVal);
-	else {
-		transmitData(1);
+	else
 		fillArrayWithGiven(lightIntensityDigitArray, 0, 4, 0x00);
-	}
 	
 	// Compose array for display
 	appendTwoLedKeyUnitArrays(finalDigitArray, temperatureDigitArray, 4, lightIntensityDigitArray, 4);
