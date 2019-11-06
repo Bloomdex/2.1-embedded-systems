@@ -6,6 +6,7 @@ void init_SCH(void);
 void temperature_task(void);
 void light_task(void);
 void ledKeyUnit_task(void);
+void ledKeyUnitButtonReading_task(void);
 int main (void);
 
 #endif

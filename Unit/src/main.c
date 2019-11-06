@@ -17,7 +17,8 @@
 
 #define TEMPERATURE_TASK_PERIOD 100
 #define LIGHT_TASK_PERIOD 50
-#define LEDKEYUNIT_TASK_PERIOD 50
+#define LEDKEYUNIT_TASK_PERIOD 25
+#define LEDKEYUNITBUTTONREADING_TASK_PERIOD 4
 
 
 void setup(void) {
@@ -33,8 +34,6 @@ void setup(void) {
 	_delay_ms(1000);
 }
 
-void tempTask(void);
-
 void init_SCH(void)
 {
 	SCH_Init_T1();
@@ -42,10 +41,10 @@ void init_SCH(void)
 	SCH_Add_Task(&temperature_task, 0, TEMPERATURE_TASK_PERIOD);
 	SCH_Add_Task(&light_task, 0, LIGHT_TASK_PERIOD);
 	SCH_Add_Task(&ledKeyUnit_task, 0, LEDKEYUNIT_TASK_PERIOD);
+	SCH_Add_Task(&ledKeyUnitButtonReading_task, 0, LEDKEYUNITBUTTONREADING_TASK_PERIOD);
 	SCH_Add_Task(&rollerShutterAnimate, 0, 100);
 	SCH_Add_Task(&handleInstructions, 0, 5);
 }
-
 
 void temperature_task(void)
 {
@@ -66,6 +65,11 @@ void ledKeyUnit_task(void)
 	int8_t temperatureReading = (int8_t)getTemperature();
 	int8_t lightReading = (int8_t)getLightIntensity();
 	updateLedKeyUnit(temperatureReading, lightReading);
+}
+
+void ledKeyUnitButtonReading_task(void)
+{
+	updateButtonReadings(readButtons());
 }
 
 int main(void)
