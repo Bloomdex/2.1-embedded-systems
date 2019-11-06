@@ -11,9 +11,9 @@
 #define LOW  0x0
 #define LEDKEYLOCKTICKS 5
 
-const uint8_t data = 5;
-const uint8_t clock = 6;
-const uint8_t strobe = 7;
+#define DATA_PIN 5
+#define CLOCK_PIN 6
+#define STROBE_PIN 7
 
 uint8_t currentButtonReadings = 0;
 uint8_t lockDisplayUpdate = 0;
@@ -46,10 +46,10 @@ void write(uint8_t pin, uint8_t val) {
 void shiftOut (uint8_t val) {
 	uint8_t i;
 	for (i = 0; i < 8; i++)  {
-		write(clock, LOW);   // bit valid on rising edge
-		write(data, val & 1 ? HIGH : LOW); // lsb first
+		write(CLOCK_PIN, LOW);   // bit valid on rising edge
+		write(DATA_PIN, val & 1 ? HIGH : LOW); // lsb first
 		val = val >> 1;
-		write(clock, HIGH);
+		write(CLOCK_PIN, HIGH);
 	}
 }
 
@@ -57,23 +57,23 @@ uint8_t shiftIn() {
 	uint8_t value = 0;
 	uint8_t i;
 
-	DDRD &= ~(_BV(data)); // clear bit, direction = input
+	DDRD &= ~(_BV(DATA_PIN)); // clear bit, direction = input
 	
 	for (i = 0; i < 8; ++i) {
-		write(clock, LOW);   // bit valid on rising edge
-		value = value | (read(data) << i); // lsb first
-		write(clock, HIGH);
+		write(CLOCK_PIN, LOW);   // bit valid on rising edge
+		value = value | (read(DATA_PIN) << i); // lsb first
+		write(CLOCK_PIN, HIGH);
 	}
 	
-	DDRD |= _BV(data); // set bit, direction = output
+	DDRD |= _BV(DATA_PIN); // set bit, direction = output
 	
 	return value;
 }
 
 void sendCommand(uint8_t value) {
-	write(strobe, LOW);
+	write(STROBE_PIN, LOW);
 	shiftOut(value);
-	write(strobe, HIGH);
+	write(STROBE_PIN, HIGH);
 }
 
 
@@ -147,18 +147,18 @@ void appendTwoLedKeyUnitArrays(uint8_t result[], uint8_t array1[], uint8_t array
 
 uint8_t readButtons() {
 	uint8_t buttons = 0;
-	write(strobe, LOW);
+	write(STROBE_PIN, LOW);
 	shiftOut(0x42); // key scan (read buttons)
 
-	DDRD &= ~(_BV(data)); // clear bit, direction = input
+	DDRD &= ~(_BV(DATA_PIN)); // clear bit, direction = input
 
 	for (uint8_t i = 0; i < 4; i++) {
 		uint8_t v = shiftIn() << i;
 		buttons |= v;
 	}
 
-	DDRD |= _BV(data); // set bit, direction = output
-	write(strobe, HIGH);
+	DDRD |= _BV(DATA_PIN); // set bit, direction = output
+	write(STROBE_PIN, HIGH);
 	return buttons;
 }
 
@@ -284,7 +284,7 @@ void updateDisplayingValues(int8_t tempVal, int8_t lightVal) {
 void sendArrayToLedKeyUnit(uint8_t array[]) {
 	// Setup
 	sendCommand(0x40);	// auto-increment address
-	write(strobe, LOW);
+	write(STROBE_PIN, LOW);
 	shiftOut(0xc0);		// set starting address = 0
 	
 	// Send the values to the unit's display
@@ -293,5 +293,5 @@ void sendArrayToLedKeyUnit(uint8_t array[]) {
 		shiftOut(0x00);
 	}
 	
-	write(strobe, HIGH);
+	write(STROBE_PIN, HIGH);
 }
