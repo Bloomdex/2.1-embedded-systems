@@ -56,6 +56,26 @@ class MakeWindows:
         message.exec_()
 
     @staticmethod
+    def update_light_intensity_inputs():
+        for x in MakeWindows.subwindows:
+            x.light_intensity_input.setValue(units.Units.get_unit_light_intensity(x.unit))
+
+    @staticmethod
+    def update_temp_inputs():
+        for x in MakeWindows.subwindows:
+            x.temperature_input.setValue(units.Units.get_unit_temp(x.unit))
+
+    @staticmethod
+    def update_min_inputs():
+        for x in MakeWindows.subwindows:
+            x.min_roll_out_input.setValue(units.Units.get_unit_min(x.unit))
+
+    @staticmethod
+    def update_max_inputs():
+        for x in MakeWindows.subwindows:
+            x.max_roll_out_input.setValue(units.Units.get_unit_max(x.unit))
+
+    @staticmethod
     def update():
         while len(MakeWindows.subwindows) > 0:
             for x in MakeWindows.subwindows:
@@ -74,6 +94,6 @@ if __name__ == '__main__':
     app = QApplication.instance()
     if app is None:
         app = QApplication([])
-    units.Units.fill_units()
-    MakeWindows.make_main_window()
-    # MakeWindows.make_sub_window(1)
+    #units.Units.fill_units()
+    #MakeWindows.make_main_window()
+    MakeWindows.make_sub_window(1)

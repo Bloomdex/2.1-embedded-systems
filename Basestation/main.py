@@ -1,10 +1,10 @@
 from PyQt5 import QtWidgets
 import controlpanel.model.units as units
-import serialcontrol
+from serialcontrol.serialcontrol import ModuleDetector
 from controlpanel.view import mainwindow
 
 if __name__ == "__main__":
-    detector = serialcontrol.ModuleDetector()
+    detector = ModuleDetector()
 
     units.Units.fill_units(detector.arduinos)
 
@@ -18,7 +18,7 @@ if __name__ == "__main__":
     MainWindow = QtWidgets.QMainWindow()
     ui = mainwindow.Ui_MainWindow(MainWindow)
     ui.setupUi(MainWindow)
-
-    MainWindow.show()
+    MainWindow.showMaximized()
+    #MainWindow.show()
 
     sys.exit(app.exec_())

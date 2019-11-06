@@ -31,6 +31,26 @@ class Units:
         return sunblind.get_max_roll_out()
 
     @staticmethod
+    def set_unit_light_intensity(unit, value):
+        sunblind = Units.units[unit]
+        sunblind.set_light_intensity(value)
+
+    @staticmethod
+    def set_unit_temp(unit, value):
+        sunblind = Units.units[unit]
+        sunblind.set_temp(value)
+
+    @staticmethod
+    def get_unit_light_intensity(unit):
+        sunblind = Units.units[unit]
+        return sunblind.get_light_intensity()
+
+    @staticmethod
+    def get_unit_temp(unit):
+        sunblind = Units.units[unit]
+        return sunblind.get_temp()
+
+    @staticmethod
     def get_status(unit):
         sunblind = Units.units[unit]
         return sunblind.get_status()

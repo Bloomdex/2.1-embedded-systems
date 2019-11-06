@@ -16,10 +16,13 @@ class SunBlindModel:
         self.data_light = []
         self.data_ultrasoon = []
         self.module = module
+        self.light_intensity = 75
+        self.temperature = 25
 
     def set_min_roll_out(self, min_roll_out):
         if min_roll_out < self.max_roll_out:
             self.min_roll_out = round(min_roll_out, 2)
+            setupwindows.MakeWindows.update_min_inputs()
             print("self.min_roll_out is set to " + str(self.min_roll_out))
         else:
             setupwindows.MakeWindows.make_min_error()
@@ -27,6 +30,7 @@ class SunBlindModel:
     def set_max_roll_out(self, max_roll_out):
         if max_roll_out > self.min_roll_out:
             self.max_roll_out = round(max_roll_out, 2)
+            setupwindows.MakeWindows.update_max_inputs()
             print("self.max_roll_out is set to " + str(self.max_roll_out))
         else:
             setupwindows.MakeWindows.make_max_error()
@@ -41,6 +45,22 @@ class SunBlindModel:
         status = (self.status_light_sensor, self.status_temp_sensor, self.status_ultrasoon_sensor,
                   self.status_sun_blind)
         return status
+
+    def set_light_intensity(self, value):
+        self.light_intensity = value
+        setupwindows.MakeWindows.update_light_intensity_inputs()
+        print("self.light_intensity is set to " + str(self.light_intensity))
+
+    def set_temp(self, value):
+        self.temperature = value
+        print("self.temperature is set to " + str(self.temperature))
+        setupwindows.MakeWindows.update_temp_inputs()
+
+    def get_light_intensity(self):
+        return self.light_intensity
+
+    def get_temp(self):
+        return self.temperature
 
     def set_status_light_sensor(self, status):
         self.status_light_sensor = status

@@ -2,8 +2,8 @@ import serial.tools.list_ports
 from PyQt5 import QtWidgets, QtCore
 from serial import SerialException
 import os
-import debugmenu
-import datareader
+import serialcontrol.debugmenu as debugmenu
+import serialcontrol.datareader as datareader
 
 class ModuleDetector:
     def __init__(self):
