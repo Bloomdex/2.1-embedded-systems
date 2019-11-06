@@ -49,14 +49,14 @@ void init_SCH(void)
 void temperature_task(void)
 {
 	int8_t temperatureReading = (int8_t)getTemperature();
-	if(temperatureReading != -1)
+	if(temperatureReading != INVALID_READING_VALUE)
 		addTemperatureToBuffer(temperatureReading);
 }
 
 void light_task(void)
 {
 	int8_t lightReading = (int8_t)getLightIntensity();
-	if(lightReading != -1)
+	if(lightReading != INVALID_READING_VALUE)
 		addLightToBuffer(lightReading);
 }
 
