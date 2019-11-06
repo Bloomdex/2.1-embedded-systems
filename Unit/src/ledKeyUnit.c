@@ -5,6 +5,7 @@
 
 #include "ledKeyUnit.h"
 #include "userPreferenceHandler.h"
+#include "sensors.h"
 
 #define HIGH 0x1
 #define LOW  0x0
@@ -164,8 +165,7 @@ uint8_t readButtons() {
 
 void updateButtonReadings(uint8_t buttonReadings) {
 	// Check if reading is equal to one of the valid readings
-	uint8_t validReadings[4] = {1, 2, 16, 32};
-	uint8_t readingValid = 0;	
+	uint8_t validReadings[4] = {1, 2, 16, 32};	
 	
 	for (uint8_t i = 0; i < 4; i++) {
 		if(buttonReadings == validReadings[i])
@@ -190,7 +190,8 @@ void updateLedKeyUnit(int8_t tempVal, uint8_t lightVal) {
 	}
 	else if(lockDisplayUpdate == 0)
 		currentUpdateState = displayValues;
-		
+	
+	// Do actions based on current state
 	if(currentUpdateState == changeValuesTemp || currentUpdateState == changeValuesLight) {
 		// Update the changeValues state
 		lockTickCount += 1;	
@@ -218,13 +219,13 @@ void updateLedKeyUnit(int8_t tempVal, uint8_t lightVal) {
 void updateChangingValues(int8_t valueToAdd, int8_t tempVal, uint8_t lightVal) {
 	uint8_t finalDigitArray[8];
 	
-	if(currentUpdateState == changeValuesTemp && tempVal != -1) {
+	if(currentUpdateState == changeValuesTemp) {
 		// Compose indicator digit array
 		uint8_t indicatorDigitArray[4] = { 0x78, 0x79, 0x37, 0x73 };	// Temp
 			
 		// Update value by applying changes
 		int8_t newTempPreference = getUserTempPreference() + valueToAdd;
-		if(newTempPreference >= 0 && newTempPreference <= 100)
+		if(newTempPreference >= -40 && newTempPreference <= 125)
 			setUserTempPreference(newTempPreference);
 		
 		// Compose lightPreference digit array
@@ -236,7 +237,7 @@ void updateChangingValues(int8_t valueToAdd, int8_t tempVal, uint8_t lightVal) {
 		
 		sendArrayToLedKeyUnit(finalDigitArray);
 	}
-	else if(currentUpdateState == changeValuesLight && lightVal != -1) {
+	else if(currentUpdateState == changeValuesLight) {
 		// Compose indicator digit array
 		uint8_t indicatorDigitArray[5] = { 0x38, 0x10, 0x3D, 0x74, 0x78 }; // Light
 			
@@ -256,22 +257,27 @@ void updateChangingValues(int8_t valueToAdd, int8_t tempVal, uint8_t lightVal) {
 	}
 }
 
-void updateDisplayingValues(int8_t tempVal, uint8_t lightVal) {
+#include "UART.h"
+void updateDisplayingValues(int8_t tempVal, int8_t lightVal) {
 	uint8_t temperatureDigitArray[4];
 	uint8_t lightIntensityDigitArray[4];
 	uint8_t finalDigitArray[8];
 	
 	// Compose temperature digit array
-	if(tempVal != -1)
+	if(tempVal != INVALID_READING_VALUE)
 		valToDigitsInArray(temperatureDigitArray, 4, tempVal);
-	else
+	else {
+		transmitData(0);
 		fillArrayWithGiven(temperatureDigitArray, 0, 4, 0x00);
+	}
 
 	// Compose lightIntensity digit array
-	if(lightVal != -1)
+	if(lightVal != INVALID_READING_VALUE)
 		valToDigitsInArray(lightIntensityDigitArray, 4, lightVal);
-	else
+	else {
+		transmitData(1);
 		fillArrayWithGiven(lightIntensityDigitArray, 0, 4, 0x00);
+	}
 	
 	// Compose array for display
 	appendTwoLedKeyUnitArrays(finalDigitArray, temperatureDigitArray, 4, lightIntensityDigitArray, 4);
