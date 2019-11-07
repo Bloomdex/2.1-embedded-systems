@@ -37,7 +37,7 @@ python3 main.py
 ```
 cd Basestation/
 python -m venv venv
-venv\bin\activate  
+venv\Scripts\activate  
 pip install -r requirements.txt
 ```
 
@@ -45,7 +45,7 @@ pip install -r requirements.txt
 
 ```
 cd Basestation/
-venv\bin\activate  
+venv\Scripts\activate  
 python main.py
 ```
 
