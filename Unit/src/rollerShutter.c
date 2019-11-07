@@ -1,3 +1,5 @@
+#include <avr/io.h>
+
 #include "rollerShutter.h"
 
 #include "scheduler.h"
@@ -10,36 +12,49 @@
 uint8_t animationActive = 0;
 uint8_t animationState = 0;
 
+enum rollerShutterState {shutterForceClosed, shutterClosed, shutterClosing, shutterOpening, shutterOpened, shutterForceOpened};
+enum rollerShutterState currentRollerShutterState = shutterOpened;
+
 
 void setRollerShutterClosed() {
 	digitalWrite(&PORTB, 0x0F, (1 << PINB3));
 }
 
-void setRollerShutterOpen() {
+void setRollerShutterOpened() {
 	digitalWrite(&PORTB, 0x0F, (1 << PINB0));
 }
 
-void setRollerShutterMoving() {
-	animationActive = 1;
-}
-
-void setRollerShutterStill() {
-	animationActive = 0;
-}
-
-void rollerShutterAnimate_part_2(void)
-{
-	digitalWrite(&PORTB, 0x0F, (1 << PINB2));
-}
-
-void rollerShutterAnimate() {
-	if(animationActive == 1) {
-		if (animationState == 0) {
-			digitalWrite(&PORTB, 0x0F, 0x02);
-			animationState = 1;
-		} else {
-			digitalWrite(&PORTB, 0x0F, 0x04);
-			animationState = 0;
-		}
+void setRollerShutterAnimating() {
+	if (animationState == 0) {
+		digitalWrite(&PORTB, 0x0F, 0x02);
+		animationState = 1;
 	}
+	else {
+		digitalWrite(&PORTB, 0x0F, 0x04);
+		animationState = 0;
+	}
+}
+
+void rollerShutterUpdate(int8_t temperature, int8_t lightIntensity, int8_t prefferedTemperature, int8_t prefferedLightIntensity) {
+	if(currentRollerShutterState == shutterForceClosed
+		|| (currentRollerShutterState != shutterForceClosed && temperature >= prefferedTemperature && lightIntensity >= prefferedLightIntensity)) 
+	{
+		// HIER CODE DIE KIJKT HOE VER DE ULTRASOONSENSOR IS
+		currentRollerShutterState = shutterClosed;
+	}
+	else if(currentRollerShutterState == shutterForceOpened
+		|| (currentRollerShutterState != shutterForceOpened && temperature < prefferedTemperature)
+		|| (currentRollerShutterState != shutterForceOpened && lightIntensity < prefferedLightIntensity))
+	{
+		// HIER CODE DIE KIJKT HOE VER DE ULTRASOONSENSOR IS
+		currentRollerShutterState = shutterOpened;
+	}
+
+	// Do actions based on the current state
+	if(currentRollerShutterState == shutterClosing || currentRollerShutterState == shutterOpening)
+		setRollerShutterAnimating();
+	else if(currentRollerShutterState == shutterClosed || currentRollerShutterState == shutterForceClosed)
+		setRollerShutterClosed();
+	else if(currentRollerShutterState == shutterOpened || currentRollerShutterState == shutterForceOpened)
+		setRollerShutterOpened();
 }
