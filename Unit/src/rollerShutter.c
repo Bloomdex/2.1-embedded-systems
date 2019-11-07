@@ -10,12 +10,9 @@
 
 uint8_t forcedState = 0;
 
-enum rollerShutterStaticState { shutterClosed, shutterOpened, none };
-enum rollerShutterStaticState currentRollerShutterStaticState = none;
-
-enum rollerShutterDynamicState { done, shutterClosing, shutterOpening };
-enum rollerShutterDynamicState currentRollerShutterDynamicState = done;	// Never change current
-enum rollerShutterDynamicState targetRollerShutterDynamicState = done;	// Only change target
+enum rollerShutterState { shutterClosed, shutterClosing, shutterOpening, shutterOpened, none };
+enum rollerShutterState currentRollerShutterState = none;	// Never change current
+enum rollerShutterState targetRollerShutterState = none;	// Only change target
 
 
 void setRollerShutterClosed() {
@@ -37,39 +34,37 @@ void setRollerShutterAnimating() {
 
 void setShutterForceClosed() {
 	forcedState = 1;
-	targetRollerShutterDynamicState = shutterClosing;
+	targetRollerShutterState = shutterClosing;
 }
 void setShutterForceOpened() {
 	forcedState = 1;
-	targetRollerShutterDynamicState = shutterOpening;
+	targetRollerShutterState = shutterOpening;
 }
-void setShutterFree() {
+void setShutterFreed() {
 	forcedState = 0;
 }
 
 
 void rollerShutterUpdate(int8_t temperature, int8_t lightIntensity, int8_t prefferedTemperature, int8_t prefferedLightIntensity) {
 	// Determine which static state the rollerShutter is in
-	if(currentRollerShutterDynamicState != targetRollerShutterDynamicState) {
-		if(targetRollerShutterDynamicState == shutterClosing && currentRollerShutterStaticState != shutterClosed) {
+	if(currentRollerShutterState != targetRollerShutterState) {
+		if(targetRollerShutterState == shutterClosing && currentRollerShutterState != shutterClosed) {
 			setRollerShutterAnimating();
+			transmitData(1);
 			
 			if(1) { // ----ATTENTION----: In deze if moet gekeken worden naar ultrasoon data
-				currentRollerShutterDynamicState = done;
-				targetRollerShutterDynamicState = done;
-				
-				currentRollerShutterStaticState = shutterClosed;
+				targetRollerShutterState = shutterClosed;
+				currentRollerShutterState = shutterClosed;
 				setRollerShutterClosed();
 			}
 		}
-		else if(targetRollerShutterDynamicState == shutterOpening && currentRollerShutterStaticState != shutterOpened) {
+		else if(targetRollerShutterState == shutterOpening && currentRollerShutterState != shutterOpened) {
 			setRollerShutterAnimating();
+			transmitData(1);
 			
 			if(1) { // ----ATTENTION----: In deze if moet gekeken worden naar ultrasoon data
-				currentRollerShutterDynamicState = done;
-				targetRollerShutterDynamicState = done;
-				
-				currentRollerShutterStaticState = shutterOpened;
+				targetRollerShutterState = shutterOpened;
+				currentRollerShutterState = shutterOpened;
 				setRollerShutterOpened();
 			}
 		}
@@ -78,8 +73,8 @@ void rollerShutterUpdate(int8_t temperature, int8_t lightIntensity, int8_t preff
 	// Determine the next target state 
 	if(forcedState == 0) { // If the target is not being forced by a basestation
 		if(temperature >= prefferedTemperature && lightIntensity >= prefferedLightIntensity)
-			targetRollerShutterDynamicState = shutterClosing;
+			targetRollerShutterState = shutterClosing;
 		else
-			targetRollerShutterDynamicState = shutterOpening;
+			targetRollerShutterState = shutterOpening;
 	}
 }
