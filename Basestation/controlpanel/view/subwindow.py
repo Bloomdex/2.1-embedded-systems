@@ -1,21 +1,11 @@
-import os
-import threading
-import time
-import multiprocessing
-from concurrent.futures import thread
-
 from PyQt5 import QtCore, QtGui, QtWidgets
 import pyqtgraph as pg
-import random
-from PyQt5 import QtCore, QtGui, QtWidgets
-import pyqtgraph as pg
-from PyQt5.QtWidgets import QSizePolicy
-
 import controlpanel.model.units as units
 
 
 class Ui_SubWindow(object):
     def setupUi(self, SubWindow, unit):
+        self.subwindow = SubWindow
         self.unit = unit
         SubWindow.setObjectName("SubWindow")
         SubWindow.setMinimumHeight(280)
@@ -23,8 +13,6 @@ class Ui_SubWindow(object):
 
         self.centralwidget = QtWidgets.QWidget(SubWindow)
         self.centralwidget.setObjectName("centralwidget")
-        #self.gridLayout_2 = QtWidgets.QGridLayout(self.centralwidget)
-        #self.gridLayout_2.setObjectName("gridLayout_2")
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName("gridLayout")
         self.sunblindName = QtWidgets.QLabel(self.centralwidget)
@@ -174,18 +162,17 @@ class Ui_SubWindow(object):
         # the data tab and gridLayout 3
         self.Data = QtWidgets.QWidget()
         self.Data.setObjectName("Data")
-        self.gridLayout_3 = QtWidgets.QGridLayout(self.Data)
-        self.gridLayout_3.setObjectName("gridLayout_3")
+        self.gridLayout_2 = QtWidgets.QGridLayout(self.Data)
+        self.gridLayout_2.setObjectName("gridLayout_2")
         self.tabWidget.addTab(self.Data, "")
         # the stauts tab and gridLayout 4
         self.Status = QtWidgets.QWidget()
         self.Status.setObjectName("Status")
-        self.gridLayout_4 = QtWidgets.QGridLayout(self.Status)
-        self.gridLayout_4.setObjectName("gridLayout_4")
+        self.gridLayout_3 = QtWidgets.QGridLayout(self.Status)
+        self.gridLayout_3.setObjectName("gridLayout_3")
         self.tabWidget.addTab(self.Status, "")
         self.gridLayout.addWidget(self.tabWidget, 1, 0, 1, 12)
 
-        #self.gridLayout_2.addLayout(self.gridLayout, 1, 1, 1, 1)
         # the graph op Data tab
         self.pen = QtGui.QPen()
         self.pen.setColor(QtGui.QColor(125, 175, 25))
@@ -215,7 +202,7 @@ class Ui_SubWindow(object):
         labelStyle = {'color': '#FFF', 'font-size': '10pt'}
         self.graph.setLabel('left', 'Temperature/Light intensity', **labelStyle)
         self.graph.setLabel('bottom', 'Datapoint', **labelStyle)
-        self.gridLayout_3.addWidget(self.graph, 0, 0, 1, 1)
+        self.gridLayout_2.addWidget(self.graph, 0, 0, 1, 1)
 
         # statusText on status tab
         self.statusText = QtWidgets.QLabel(self.Status)
@@ -228,10 +215,11 @@ class Ui_SubWindow(object):
         self.statusText.setFont(font2)
         self.statusText.setAlignment(QtCore.Qt.AlignHCenter)
         self.statusText.setText("Status")
-        self.gridLayout_4.addWidget(self.statusText, 0, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.statusText, 0, 0, 1, 1)
         # status table
         self.tableWidget = QtWidgets.QTableWidget(self.Status)
         self.tableWidget.setStyleSheet("background: rgb(255, 255, 255)")
+        self.tableWidget.setFocusPolicy(QtCore.Qt.NoFocus)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Ignored)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -310,12 +298,13 @@ class Ui_SubWindow(object):
         item.setTextAlignment(QtCore.Qt.AlignCenter)
         item.setFlags(QtCore.Qt.ItemIsEnabled)
         self.tableWidget.setItem(3, 2, item)
-        self.tableWidget.horizontalHeader().setVisible(False)
+        self.tableWidget.horizontalHeader().setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
+        self.tableWidget.horizontalHeader().setVisible(True)
         self.tableWidget.horizontalHeader().setCascadingSectionResizes(True)
         self.tableWidget.horizontalHeader().setDefaultSectionSize(109)
         self.tableWidget.horizontalHeader().setHighlightSections(True)
         self.tableWidget.horizontalHeader().setMinimumSectionSize(109)
-        self.tableWidget.horizontalHeader().setSortIndicatorShown(True)
+        self.tableWidget.horizontalHeader().setSortIndicatorShown(False)
         self.tableWidget.horizontalHeader().setStretchLastSection(False)
         self.tableWidget.verticalHeader().setVisible(False)
         self.tableWidget.verticalHeader().setCascadingSectionResizes(False)
@@ -323,7 +312,7 @@ class Ui_SubWindow(object):
         self.tableWidget.verticalHeader().setHighlightSections(True)
         self.tableWidget.verticalHeader().setMinimumSectionSize(18)
         self.tableWidget.verticalHeader().setStretchLastSection(False)
-        self.gridLayout_4.addWidget(self.tableWidget, 0, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.tableWidget, 0, 0, 1, 1)
 
         # text on in the top from the window
         self.sunBlindName = QtWidgets.QLabel(self.centralwidget)
@@ -369,6 +358,20 @@ class Ui_SubWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.Data), _translate("SubWindow", "Data"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.Status), _translate("SubWindow", "Status"))
         self.sunBlindName.setText(_translate("SubWindow", "Unit " + str(self.unit)))
+        item = self.tableWidget.verticalHeaderItem(0)
+        item.setText(_translate("SubWindow", "light sensor"))
+        item = self.tableWidget.verticalHeaderItem(1)
+        item.setText(_translate("SubWindow", "temperature sensor"))
+        item = self.tableWidget.verticalHeaderItem(2)
+        item.setText(_translate("SubWindow", "ultrasoon sensor"))
+        item = self.tableWidget.verticalHeaderItem(3)
+        item.setText(_translate("SubWindow", "sun blind"))
+        item = self.tableWidget.horizontalHeaderItem(0)
+        item.setText(_translate("SubWindow", "Sensor"))
+        item = self.tableWidget.horizontalHeaderItem(1)
+        item.setText(_translate("SubWindow", "Status"))
+        item = self.tableWidget.horizontalHeaderItem(2)
+        item.setText(_translate("SubWindow", "Sensor value"))
         self.update_status()
 
     def set_status(self):
@@ -434,3 +437,6 @@ class Ui_SubWindow(object):
     def update(self):
         self.update_graph()
         self.update_status()
+
+    def check_if_module_is_connected(self):
+        return units.Units.check_if_module_is_connected(self.unit)

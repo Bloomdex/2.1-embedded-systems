@@ -124,3 +124,8 @@ class Units:
     def generate_new_data(unit):
         sunblind = Units.units[unit]
         sunblind.generate_new_data()
+
+    @staticmethod
+    def check_if_module_is_connected(unit):
+        sunblind = Units.units[unit]
+        return sunblind.module.is_connected

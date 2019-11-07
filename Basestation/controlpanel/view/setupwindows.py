@@ -80,7 +80,10 @@ class MakeWindows:
         while len(MakeWindows.subwindows) > 0:
             for x in MakeWindows.subwindows:
                 try:
-                    x.update()
+                    if x.check_if_module_is_connected():
+                        x.update()
+                    else:
+                        x.subwindow.setEnabled(False)
                 except RuntimeError:
                     MakeWindows.to_remove_from_subwindows.append(x)
 
