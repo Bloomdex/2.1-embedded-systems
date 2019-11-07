@@ -70,7 +70,6 @@ class Module:
             self.ser.write(bytearray([hex_byte]))
 
     def decode_retrieved_data(self):
-        print(self.data)
         decoded_signal = datareader.DataReader.decode_and_return_data(self.data)
         decoded_signal = dict((datareader.data_types[key], value) for (key, value) in decoded_signal.items())
 

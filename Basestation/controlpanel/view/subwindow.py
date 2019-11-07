@@ -394,8 +394,6 @@ class Ui_SubWindow(object):
         self.temperature_value = self.temperature_input.value()
 
     def update_graph(self):
-        units.Units.generate_new_data(self.unit)
-
         temperature_data = units.Units.get_data_temp(self.unit)
         light_data = units.Units.get_data_light(self.unit)
 

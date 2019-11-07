@@ -78,6 +78,9 @@ class MakeWindows:
     @staticmethod
     def update():
         while len(MakeWindows.subwindows) > 0:
+            for unit in units.Units.units:
+                unit.generate_new_data()
+
             for x in MakeWindows.subwindows:
                 try:
                     if x.check_if_module_is_connected():
