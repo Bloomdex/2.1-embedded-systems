@@ -10,7 +10,6 @@ if __name__ == "__main__":
 
     for arduino in detector.arduinos:
         detector.arduinos[arduino].open_connection()
-        detector.arduinos[arduino].reader.start()
 
     import sys
 

@@ -1,5 +1,7 @@
-import controlpanel.view.setupwindows as setupwindows
+from serial import SerialException
 
+import controlpanel.view.setupwindows as setupwindows
+import traceback
 import random
 
 
@@ -117,9 +119,13 @@ class SunBlindModel:
         received_data = self.module.decode_retrieved_data()
         self.add_new_data(received_data)
 
-        # Sends instructions to module to return temperature and light
-        self.module.send_data(0xFD)  # Light
-        self.module.send_data(0xFE)  # Temperature
+        try:
+            # Sends instructions to module to return temperature and light
+            self.module.send_data(0xFD)  # Light
+            self.module.send_data(0xFE)  # Temperature
+        except SerialException as e:
+            print(e)
+            self.module.close_connection()
 
     def add_new_data(self, data):
         if 'Temperature' in data:

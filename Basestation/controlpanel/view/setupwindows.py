@@ -81,8 +81,10 @@ class MakeWindows:
             for x in MakeWindows.subwindows:
                 try:
                     if x.check_if_module_is_connected():
+                        x.subwindow.setEnabled(True)
                         x.update()
                     else:
+                        units.Units.units[x.unit].module.open_connection()
                         x.subwindow.setEnabled(False)
                 except RuntimeError:
                     MakeWindows.to_remove_from_subwindows.append(x)

@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import pyqtgraph as pg
 import controlpanel.model.units as units
-
+import os
 
 class Ui_SubWindow(object):
     def setupUi(self, SubWindow, unit):
@@ -218,7 +218,8 @@ class Ui_SubWindow(object):
         self.gridLayout_3.addWidget(self.statusText, 0, 0, 1, 1)
         # status table
         self.tableWidget = QtWidgets.QTableWidget(self.Status)
-        self.tableWidget.setStyleSheet("background: rgb(255, 255, 255)")
+        if os.name is 'nt':
+            self.tableWidget.setStyleSheet("background: rgb(255, 255, 255)")
         self.tableWidget.setFocusPolicy(QtCore.Qt.NoFocus)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Ignored)
         sizePolicy.setHorizontalStretch(0)

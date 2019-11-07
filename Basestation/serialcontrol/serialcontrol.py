@@ -56,11 +56,13 @@ class Module:
             self.ser = serial.Serial(port=self.com_device.device, baudrate=19200, bytesize=8,
                                      parity='N', stopbits=1, timeout=None)
             self.is_connected = True
+            self.reader.start()
         except SerialException:
             print("Could not open connection with Arduino:", self.com_device.device)
 
     def close_connection(self):
         self.ser.close()
+        self.ser = None
         self.is_connected = False
 
     def send_data(self, hex_byte):
@@ -68,6 +70,7 @@ class Module:
             self.ser.write(bytearray([hex_byte]))
 
     def decode_retrieved_data(self):
+        print(self.data)
         decoded_signal = datareader.DataReader.decode_and_return_data(self.data)
         decoded_signal = dict((datareader.data_types[key], value) for (key, value) in decoded_signal.items())
 
@@ -89,7 +92,10 @@ class Module:
                         self.module.data.append(int(incoming_byte.hex(), 16))
                         self.module.data_is_updated = True
                     except:
-                        pass
+                        self.module.close_connection()
+                else:
+                    self.running = False
+                    break
 
         def stop(self):
             self.running = False
