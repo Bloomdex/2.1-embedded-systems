@@ -2,8 +2,8 @@ import serial.tools.list_ports
 from PyQt5 import QtWidgets, QtCore
 from serial import SerialException
 import os
-import debugmenu
-import datareader
+import serialcontrol.debugmenu as debugmenu
+import serialcontrol.datareader as datareader
 
 class ModuleDetector:
     def __init__(self):
@@ -48,14 +48,13 @@ class Module:
         self.type = 'None'
         self.com_device = device
         self.data = []
-        self.retrieved_info = {}
         self.data_is_updated = False
         self.reader = Module.ReadThread(self)
-        self.reader.start()
 
     def open_connection(self):
         try:
-            self.ser = serial.Serial(self.com_device.device, 19200)
+            self.ser = serial.Serial(port=self.com_device.device, baudrate=19200, bytesize=8,
+                                     parity='N', stopbits=1, timeout=None)
             self.is_connected = True
         except SerialException:
             print("Could not open connection with Arduino:", self.com_device.device)
@@ -73,8 +72,7 @@ class Module:
         decoded_signal = dict((datareader.data_types[key], value) for (key, value) in decoded_signal.items())
 
         self.data.clear()
-        self.retrieved_info = decoded_signal
-        print(self.retrieved_info)
+        return decoded_signal
 
     class ReadThread(QtCore.QThread):
         def __init__(self, module):
@@ -108,6 +106,7 @@ if __name__ == "__main__":
     detector = ModuleDetector()
 
     for arduino in detector.arduinos:
+        detector.arduinos[arduino].reader.start()
         ui.add_tab(detector.arduinos[arduino])
 
     Form.show()
