@@ -44,13 +44,16 @@ void setShutterFreed() {
 	forcedState = 0;
 }
 
+uint8_t getRollerShutterState() {
+	return (uint8_t)currentRollerShutterState;
+}
+
 
 void rollerShutterUpdate(int8_t temperature, int8_t lightIntensity, int8_t prefferedTemperature, int8_t prefferedLightIntensity) {
 	// Determine which static state the rollerShutter is in
 	if(currentRollerShutterState != targetRollerShutterState) {
 		if(targetRollerShutterState == shutterClosing && currentRollerShutterState != shutterClosed) {
 			setRollerShutterAnimating();
-			transmitData(1);
 			
 			if(1) { // ----ATTENTION----: In deze if moet gekeken worden naar ultrasoon data
 				targetRollerShutterState = shutterClosed;
@@ -60,7 +63,6 @@ void rollerShutterUpdate(int8_t temperature, int8_t lightIntensity, int8_t preff
 		}
 		else if(targetRollerShutterState == shutterOpening && currentRollerShutterState != shutterOpened) {
 			setRollerShutterAnimating();
-			transmitData(1);
 			
 			if(1) { // ----ATTENTION----: In deze if moet gekeken worden naar ultrasoon data
 				targetRollerShutterState = shutterOpened;
