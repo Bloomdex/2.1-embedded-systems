@@ -7,6 +7,7 @@ void temperature_task(void);
 void light_task(void);
 void ledKeyUnit_task(void);
 void ledKeyUnitButtonReading_task(void);
+void rollerShutter_task(void);
 int main (void);
 
 #endif
