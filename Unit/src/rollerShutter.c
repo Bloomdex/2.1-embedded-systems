@@ -8,10 +8,6 @@
 #define F_CPU 16E6    // Frequency definition for delay.h
 #include <util/delay.h>
 
-
-uint8_t animationActive = 0;
-uint8_t animationState = 0;
-
 enum rollerShutterState {shutterForceClosed, shutterClosed, shutterClosing, shutterOpening, shutterOpened, shutterForceOpened};
 enum rollerShutterState currentRollerShutterState = shutterOpened;
 
@@ -25,14 +21,10 @@ void setRollerShutterOpened() {
 }
 
 void setRollerShutterAnimating() {
-	if (animationState == 0) {
-		digitalWrite(&PORTB, 0x0F, 0x02);
-		animationState = 1;
-	}
-	else {
-		digitalWrite(&PORTB, 0x0F, 0x04);
-		animationState = 0;
-	}
+	static uint8_t portValues = 0x02;
+	portValues = ~portValues;
+	
+	digitalWrite(&PORTB, 0x06,  portValues);
 }
 
 void rollerShutterUpdate(int8_t temperature, int8_t lightIntensity, int8_t prefferedTemperature, int8_t prefferedLightIntensity) {
