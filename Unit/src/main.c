@@ -24,7 +24,7 @@
 
 
 void setup(void) {
-	DDRB = 0xFF;
+	DDRB = (1 << PIND0) | (1 << PIND1) | (1 << PIND2) | (1 << PIND3) | (1 << PIND4);
 	DDRD = (1 << PIND5) | (1 << PIND6) | (1 << PIND7);
 	
 	initUART();
