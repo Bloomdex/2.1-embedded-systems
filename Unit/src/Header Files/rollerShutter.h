@@ -3,7 +3,7 @@
 
 void setRollerShutterClosed();
 void setRollerShutterOpened();
-void setRollerShutterAnimating();
+void setRollerShutterAnimating(uint8_t openOrClosed);
 
 void setShutterForceClosed();
 void setShutterForceOpened();

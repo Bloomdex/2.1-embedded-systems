@@ -8,6 +8,12 @@
 #define F_CPU 16E6    // Frequency definition for delay.h
 #include <util/delay.h>
 
+#define LED_OFF_PIN 0
+#define LED_INDICATOR_PIN_1 1
+#define LED_INDICATOR_PIN_2 2
+#define LED_INDICATOR_PIN_3 3
+#define LED_ON_PIN 4
+
 uint8_t forcedState = 0;
 
 enum rollerShutterState { shutterClosed, shutterClosing, shutterOpening, shutterOpened, none };
@@ -16,19 +22,38 @@ enum rollerShutterState targetRollerShutterState = none;	// Only change target
 
 
 void setRollerShutterClosed() {
-	digitalWrite(&PORTB, 0x0F, (1 << PINB0));
+	digitalWrite(&PORTB, 0x1F, (1 << LED_OFF_PIN));
 }
 
 void setRollerShutterOpened() {
-	digitalWrite(&PORTB, 0x0F, (1 << PINB3));
+	digitalWrite(&PORTB, 0x1F, (1 << LED_ON_PIN));
 }
 
-void setRollerShutterAnimating() {
-	static uint8_t portValues = 0x02;
-	portValues = ~portValues;
+void setRollerShutterAnimating(uint8_t openOrClosed) {
+	// 0 animates towards the LED_ON_PIN
+	// 1 animates towards the LED_OFF_PIN
+	static uint8_t i = 1;
+	uint8_t ledValues;
 	
-	digitalWrite(&PORTB, 0x09,  0);
-	digitalWrite(&PORTB, 0x06,  portValues);
+	// Determine the animation direction
+	if(openOrClosed == 0)
+		ledValues = i;
+	else
+		ledValues = 4 - i;
+	
+	// Determine the final portValues and apply them
+	uint8_t portValues = (1 << ledValues);
+	
+	digitalWrite(&PORTB, 0x11,  0);
+	digitalWrite(&PORTB, 0x0E,  portValues);
+	
+	// Increment i and determine if it is out of bounds
+	i += 1;
+	
+	if(i == 4)
+		i = 1;
+	else if(i == 1)
+		i = 4;
 }
 
 
@@ -53,7 +78,7 @@ void rollerShutterUpdate(int8_t temperature, int8_t lightIntensity, int8_t preff
 	// Determine which static state the rollerShutter is in
 	if(currentRollerShutterState != targetRollerShutterState) {
 		if(targetRollerShutterState == shutterClosing && currentRollerShutterState != shutterClosed) {
-			setRollerShutterAnimating();
+			setRollerShutterAnimating(1);
 			
 			if(1) { // ----ATTENTION----: In deze if moet gekeken worden naar ultrasoon data
 				targetRollerShutterState = shutterClosed;
@@ -62,7 +87,7 @@ void rollerShutterUpdate(int8_t temperature, int8_t lightIntensity, int8_t preff
 			}
 		}
 		else if(targetRollerShutterState == shutterOpening && currentRollerShutterState != shutterOpened) {
-			setRollerShutterAnimating();
+			setRollerShutterAnimating(0);
 			
 			if(1) { // ----ATTENTION----: In deze if moet gekeken worden naar ultrasoon data
 				targetRollerShutterState = shutterOpened;
