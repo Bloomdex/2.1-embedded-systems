@@ -3,10 +3,16 @@
 #include <avr/io.h>
 #include <string.h>
 #include "UART.h"
+#include "sensors.h"
+#include "rollerShutter.h"
 
 // Queue for received data.
 volatile unsigned char received_data[RECEIVED_DATA_SIZE];
 volatile uint8_t received_data_index = 0;
+
+// Current real Data reading.
+int8_t currentTemperatureReading = INVALID_READING_VALUE;
+int8_t currentLightReading = INVALID_READING_VALUE;
 
 // Buffer for measured temperatures.
 int8_t temperatures[TEMPERATURE_STORAGE_SIZE];
@@ -44,6 +50,19 @@ void transmitBufferData(char buffercode, int8_t storagebuffer[], unsigned char s
     transmitData(0x00);
 }
 
+void transmitModuleStatus() {
+    transmitData(CODE_MODULE_STATUS);
+
+    transmitData(getShutterForcedState());
+    transmitData(getRollerShutterState());
+    transmitData(currentTemperatureReading != INVALID_READING_VALUE);
+    transmitData(currentLightReading != INVALID_READING_VALUE);
+
+    transmitData(0x00);
+    transmitData(CODE_MODULE_STATUS);
+    transmitData(0x00);
+}
+
 // Handles possible instruction in the received_data queue.
 void handleInstructions(void) {
     //Loops over every data point in received_data
@@ -52,15 +71,27 @@ void handleInstructions(void) {
 
         // Checks if the current data in received_data is an instruction.
         switch(received_data[index]) {
-            case TEMPERATURE_CODE:            
-                transmitBufferData(TEMPERATURE_CODE, temperatures, TEMPERATURE_STORAGE_SIZE, temperature_head_index);
+            case CODE_TEMPERATURE:            
+                transmitBufferData(CODE_TEMPERATURE, temperatures, TEMPERATURE_STORAGE_SIZE, temperature_head_index);
                 memset(temperatures, 0, TEMPERATURE_STORAGE_SIZE);
                 temperature_head_index = 0;
                 break;
-            case LIGHT_CODE:
-                transmitBufferData(LIGHT_CODE, lights, LIGHT_STORAGE_SIZE, lights_head_index);
+            case CODE_LIGHT:
+                transmitBufferData(CODE_LIGHT, lights, LIGHT_STORAGE_SIZE, lights_head_index);
                 memset(lights, 0, LIGHT_STORAGE_SIZE);
                 lights_head_index = 0;
+                break;
+            case CODE_ROLLERSHUTTER_FORCE_CLOSE:
+                setShutterForceClosed();
+                break;
+            case CODE_ROLLERSHUTTER_FORCE_OPEN:
+                setShutterForceOpened();
+                break;
+            case CODE_ROLLERSHUTTER_FREE:
+                setShutterFreed();
+                break;
+            case CODE_MODULE_STATUS:
+                transmitModuleStatus();
                 break;
         }
 

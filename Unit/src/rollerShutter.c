@@ -68,6 +68,9 @@ void setShutterForceOpened() {
 void setShutterFreed() {
 	forcedState = 0;
 }
+uint8_t getShutterForcedState() {
+	return forcedState;
+}
 
 uint8_t getRollerShutterState() {
 	return (uint8_t)currentRollerShutterState;
