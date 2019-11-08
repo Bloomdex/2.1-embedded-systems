@@ -18,6 +18,5 @@ if __name__ == "__main__":
     ui = mainwindow.Ui_MainWindow(MainWindow)
     ui.setupUi(MainWindow)
     MainWindow.showMaximized()
-    #MainWindow.show()
 
     sys.exit(app.exec_())

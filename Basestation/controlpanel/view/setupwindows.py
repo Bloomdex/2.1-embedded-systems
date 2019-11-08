@@ -13,6 +13,7 @@ import controlpanel.model.units as units
 
 class MakeWindows:
     subwindows = []
+    roll_delay = 60
     # mainwin = []
     to_remove_from_subwindows = []
 
@@ -91,11 +92,29 @@ class MakeWindows:
                         x.subwindow.setEnabled(False)
                 except RuntimeError:
                     MakeWindows.to_remove_from_subwindows.append(x)
+                QApplication.processEvents()
+            if MakeWindows.roll_delay >= 60:
+                results = []
+                for x in range(len(units.Units.units)):
+                    results.append(units.Units.check_weather_unit(x))
+                if "open" in results:
+                    MakeWindows.roll_delay = 0
+                    for x in range(len(units.Units.units)):
+                        units.Units.roll_out_unit(x)
+                elif "close" in results:
+                    MakeWindows.roll_delay = 0
+                    for x in range(len(units.Units.units)):
+                        units.Units.roll_in_unit(x)
+            MakeWindows.roll_delay += 1
+            print(MakeWindows.roll_delay)
 
             for x in MakeWindows.to_remove_from_subwindows:
                 MakeWindows.subwindows.remove(x)
                 MakeWindows.to_remove_from_subwindows.clear()
-            time.sleep(1)
+            for x in range(0, 9):
+                time.sleep(0.1)
+                QApplication.processEvents()
+            #time.sleep(1)
 
 
 if __name__ == '__main__':

@@ -78,12 +78,12 @@ class Units:
     @staticmethod
     def roll_out_unit(unit):
         sunblind = Units.units[unit]
-        sunblind.roll_out(unit)
+        sunblind.roll_out()
 
     @staticmethod
     def roll_in_unit(unit):
         sunblind = Units.units[unit]
-        sunblind.roll_in(unit)
+        sunblind.roll_in()
 
     @staticmethod
     def get_data_x(unit):
@@ -129,3 +129,8 @@ class Units:
     def check_if_module_is_connected(unit):
         sunblind = Units.units[unit]
         return sunblind.module.is_connected
+
+    @staticmethod
+    def check_weather_unit(unit):
+        sunblind = Units.units[unit]
+        return sunblind.check_weather()
