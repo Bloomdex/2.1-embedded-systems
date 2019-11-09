@@ -138,6 +138,12 @@
     <Folder Include="src\Header Files" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="src\eeprom.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\Header Files\eeprom.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\Header Files\ledKeyUnit.h">
       <SubType>compile</SubType>
     </Compile>
@@ -162,6 +168,9 @@
     <Compile Include="src\Header Files\scheduler.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\Header Files\userPreferenceHandler.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\ledKeyUnit.c">
       <SubType>compile</SubType>
     </Compile>
@@ -184,6 +193,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\UART.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\userPreferenceHandler.c">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>

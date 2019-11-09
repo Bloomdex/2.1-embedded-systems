@@ -13,18 +13,24 @@
 #include "serial.h"
 #include "scheduler.h"
 #include "ledKeyUnit.h"
+#include "userPreferenceHandler.h"
 
 #define TEMPERATURE_TASK_PERIOD 100
 #define LIGHT_TASK_PERIOD 50
-#define LEDKEYUNIT_TASK_PERIOD 50
+#define LEDKEYUNIT_TASK_PERIOD 25
+#define LEDKEYUNITBUTTONREADING_TASK_PERIOD 4
+#define ROLLERSHUTTER_TASK_PERIOD 70
+#define HANDLEINSTRUCTIONS_PERIOD 5
+
 
 void setup(void) {
-	DDRB = 0xFF;
+	DDRB = (1 << PIND0) | (1 << PIND1) | (1 << PIND2) | (1 << PIND3) | (1 << PIND4);
 	DDRD = (1 << PIND5) | (1 << PIND6) | (1 << PIND7);
 	
 	initUART();
 	initPortManipulator();
 	initLedKeyUnit();
+	initUserPreferenceHandler();
 	init_SCH();
 
 	_delay_ms(1000);
@@ -33,25 +39,26 @@ void setup(void) {
 void init_SCH(void)
 {
 	SCH_Init_T1();
-	
+
 	SCH_Add_Task(&temperature_task, 0, TEMPERATURE_TASK_PERIOD);
 	SCH_Add_Task(&light_task, 0, LIGHT_TASK_PERIOD);
 	SCH_Add_Task(&ledKeyUnit_task, 0, LEDKEYUNIT_TASK_PERIOD);
-	SCH_Add_Task(&rollerShutterAnimate, 0, 100);
-	SCH_Add_Task(&handleInstructions, 0, 5);
+	SCH_Add_Task(&ledKeyUnitButtonReading_task, 0, LEDKEYUNITBUTTONREADING_TASK_PERIOD);
+	SCH_Add_Task(&rollerShutter_task, 0, ROLLERSHUTTER_TASK_PERIOD);
+	SCH_Add_Task(&handleInstructions, 0, HANDLEINSTRUCTIONS_PERIOD);
 }
 
 void temperature_task(void)
 {
 	int8_t temperatureReading = (int8_t)getTemperature();
-	if(temperatureReading != -1)
+	if(temperatureReading != INVALID_READING_VALUE)
 		addTemperatureToBuffer(temperatureReading);
 }
 
 void light_task(void)
 {
 	int8_t lightReading = (int8_t)getLightIntensity();
-	if(lightReading != -1)
+	if(lightReading != INVALID_READING_VALUE)
 		addLightToBuffer(lightReading);
 }
 
@@ -62,10 +69,19 @@ void ledKeyUnit_task(void)
 	updateLedKeyUnit(temperatureReading, lightReading);
 }
 
+void ledKeyUnitButtonReading_task(void)
+{
+	updateButtonReadings(readButtons());
+}
+
+void rollerShutter_task(void)
+{
+	rollerShutterUpdate((int8_t)getTemperature(), (int8_t)getLightIntensity(), getUserTempPreference(), getUserLightPreference());
+}
+
 int main(void)
 {
 	setup();
-	setRollerShutterMoving();
 	
 	SCH_Start();
 

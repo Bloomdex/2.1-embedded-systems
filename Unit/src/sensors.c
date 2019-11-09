@@ -1,5 +1,4 @@
 #include "sensors.h"
-
 #include "portManipulator.h"
 
 
@@ -9,7 +8,7 @@ float getTemperature() {
 	
 	// Set tempReadingValid to tell third parties if the reading is usable
 	if (temperatureSensorInput == 0)
-		return -1;
+		return INVALID_READING_VALUE;
 	
 	float temperature = (float)temperatureSensorInput / 1024;	// Find percentage of input reading: ranging from 0 to 1023
 	
@@ -26,7 +25,7 @@ float getLightIntensity() {
 	
 	// Set lightReadingValid to tell third parties if the reading is usable
 	if (lightSensorInput == 0)
-		return -1;
+		return INVALID_READING_VALUE;
 
 	float lightIntensity = (float)lightSensorInput / 10;	// Divide intensity value by 10 to stay inside 127 range of int8
 	

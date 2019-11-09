@@ -37,7 +37,7 @@ python3 main.py
 ```
 cd Basestation/
 python -m venv venv
-venv\bin\activate  
+venv\Scripts\activate  
 pip install -r requirements.txt
 ```
 
@@ -45,7 +45,7 @@ pip install -r requirements.txt
 
 ```
 cd Basestation/
-venv\bin\activate  
+venv\Scripts\activate  
 python main.py
 ```
 
@@ -71,4 +71,4 @@ make COM=/dev/ttyACM0 flash # where ttyACM0 is your com-dev
 
 ## Arduino schematics
 
-![](https://i.imgur.com/SHQZP8V.png)
+![](https://i.imgur.com/9tXRLiz.png)
