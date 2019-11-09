@@ -4,7 +4,7 @@
 #include <avr/io.h>
 
 // Total received data to keep queued.
-#define RECEIVED_DATA_SIZE 8
+#define RECEIVED_DATA_SIZE 16
 extern volatile unsigned char received_data[];
 extern volatile uint8_t received_data_index;
 
@@ -22,6 +22,10 @@ extern int8_t currentLightReading;
 
 //Instruction Codes - Module Status
 #define CODE_MODULE_STATUS 0xF9
+
+//Instruction Codes - Set Preferred Intensity
+#define CODE_PREFERRED_TEMPERATURE 0xF8
+#define CODE_PREFERRED_LIGHT 0xF7
 
 // Storage size of measurement buffers
 #define TEMPERATURE_STORAGE_SIZE 255

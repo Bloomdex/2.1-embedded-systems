@@ -76,10 +76,14 @@ class SunBlindModel:
 
     def set_light_intensity(self, value):
         self.light_intensity = value
+        self.module.send_data(0xF7)
+        self.module.send_data(value)
         setupwindows.MakeWindows.update_light_intensity_inputs()
 
     def set_temp(self, value):
         self.temperature = value
+        self.module.send_data(0xF8)
+        self.module.send_data(value)
         setupwindows.MakeWindows.update_temp_inputs()
 
     def get_light_intensity(self):
@@ -107,11 +111,13 @@ class SunBlindModel:
 
     def roll_out(self):
         self.status_sun_blind = "open"
+        self.module.send_data(0xFB)
         # call serial with unit and give self.max_roll_out as param
         pass
 
     def roll_in(self):
         self.status_sun_blind = "closed"
+        self.module.send_data(0xFC)
         # call serial with unit and give self.min_roll_out as param
         pass
 

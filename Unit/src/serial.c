@@ -5,6 +5,7 @@
 #include "UART.h"
 #include "sensors.h"
 #include "rollerShutter.h"
+#include "userPreferenceHandler.h"
 
 // Queue for received data.
 volatile unsigned char received_data[RECEIVED_DATA_SIZE];
@@ -68,10 +69,11 @@ void handleInstructions(void) {
     //Loops over every data point in received_data
     for(uint8_t i = 0; i < RECEIVED_DATA_SIZE; i++) {
         uint8_t index = (i + received_data_index) % RECEIVED_DATA_SIZE;
+        uint8_t value_index = (i + 1 + received_data_index) % RECEIVED_DATA_SIZE;
 
         // Checks if the current data in received_data is an instruction.
         switch(received_data[index]) {
-            case CODE_TEMPERATURE:            
+            case CODE_TEMPERATURE:           
                 transmitBufferData(CODE_TEMPERATURE, temperatures, TEMPERATURE_STORAGE_SIZE, temperature_head_index);
                 memset(temperatures, 0, TEMPERATURE_STORAGE_SIZE);
                 temperature_head_index = 0;
@@ -92,6 +94,14 @@ void handleInstructions(void) {
                 break;
             case CODE_MODULE_STATUS:
                 transmitModuleStatus();
+                break;
+            case CODE_PREFERRED_TEMPERATURE:
+                setUserTempPreference(received_data[value_index]);
+                received_data[value_index] = 0;
+                break;
+            case CODE_PREFERRED_LIGHT:
+                setUserLightPreference(received_data[value_index]);
+                received_data[value_index] = 0;
                 break;
         }
 
