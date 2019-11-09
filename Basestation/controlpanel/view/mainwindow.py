@@ -15,9 +15,9 @@ class Ui_MainWindow(object):
         self.comportsmenulist = []
         self.tileSubWindowsButton = QtWidgets.QAction(self.MainWindow)
         self.cascadeSubWindowButton = QtWidgets.QAction(self.MainWindow)
-        self.refreshButton = QtWidgets.QAction(self.MainWindow)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menuOpen = QtWidgets.QMenu(self.menubar)
+        self.menuOpen.aboutToShow.connect(self.add_items_menuOpen)
         self.menuSubwindows = QtWidgets.QMenu(self.menubar)
         self.mainFrame = QtWidgets.QWidget(MainWindow)
         self.gridLayout = QtWidgets.QGridLayout(self.mainFrame)
@@ -52,12 +52,8 @@ class Ui_MainWindow(object):
         self.cascadeSubWindowButton.setCheckable(False)
         self.cascadeSubWindowButton.setPriority(QtWidgets.QAction.LowPriority)
         self.cascadeSubWindowButton.setObjectName("cascadeSubWindowButton")
-        self.refreshButton.setCheckable(False)
-        self.refreshButton.setPriority(QtWidgets.QAction.LowPriority)
-        self.refreshButton.setObjectName("refreshButton")
         self.menuSubwindows.addAction(self.tileSubWindowsButton)
         self.menuSubwindows.addAction(self.cascadeSubWindowButton)
-        self.menuOpen.addAction(self.refreshButton)
 
         # add items to menuOpen
         self.add_items_menuOpen()
@@ -68,7 +64,6 @@ class Ui_MainWindow(object):
         # make buttons in directory menuSubwindows active
         self.tileSubWindowsButton.triggered.connect(self.subWindowFrame.tileSubWindows)
         self.cascadeSubWindowButton.triggered.connect(self.subWindowFrame.cascadeSubWindows)
-        self.refreshButton.triggered.connect(self.add_items_menuOpen)
         QtCore.QMetaObject.connectSlotsByName(mainwindow)
 
     def retranslateUi(self, mainwindow):
@@ -78,7 +73,6 @@ class Ui_MainWindow(object):
         self.menuSubwindows.setTitle(_translate("mainwindow", "Subwindow"))
         self.tileSubWindowsButton.setText(_translate("mainwindow", "Tile"))
         self.cascadeSubWindowButton.setText(_translate("mainwindow", "Cascade"))
-        self.refreshButton.setText(_translate("mainwindow", "refresh"))
 
     def closeEvent(self, window):
         pass
