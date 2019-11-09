@@ -14,7 +14,9 @@
 #include "scheduler.h"
 #include "ledKeyUnit.h"
 #include "userPreferenceHandler.h"
+#include "dataHandler.h"
 
+#define UPDATESENSORDATA_TASK_PERIOD 3
 #define TEMPERATURE_TASK_PERIOD 100
 #define LIGHT_TASK_PERIOD 50
 #define LEDKEYUNIT_TASK_PERIOD 25
@@ -40,12 +42,17 @@ void init_SCH(void)
 {
 	SCH_Init_T1();
 
+	SCH_Add_Task(&updateSensorData_task, 0, UPDATESENSORDATA_TASK_PERIOD);
 	SCH_Add_Task(&temperature_task, 0, TEMPERATURE_TASK_PERIOD);
 	SCH_Add_Task(&light_task, 0, LIGHT_TASK_PERIOD);
 	SCH_Add_Task(&ledKeyUnit_task, 0, LEDKEYUNIT_TASK_PERIOD);
 	SCH_Add_Task(&ledKeyUnitButtonReading_task, 0, LEDKEYUNITBUTTONREADING_TASK_PERIOD);
 	SCH_Add_Task(&rollerShutter_task, 0, ROLLERSHUTTER_TASK_PERIOD);
 	SCH_Add_Task(&handleInstructions, 0, HANDLEINSTRUCTIONS_PERIOD);
+}
+
+void updateSensorData_task(void) {
+	updateSensorData();
 }
 
 void temperature_task(void)
@@ -64,8 +71,8 @@ void light_task(void)
 
 void ledKeyUnit_task(void)
 {
-	int8_t temperatureReading = (int8_t)getTemperature();
-	int8_t lightReading = (int8_t)getLightIntensity();
+	int8_t temperatureReading = getTemperatureMod();
+	int8_t lightReading = getLightIntensityMod();
 	updateLedKeyUnit(temperatureReading, lightReading);
 }
 
@@ -76,7 +83,7 @@ void ledKeyUnitButtonReading_task(void)
 
 void rollerShutter_task(void)
 {
-	rollerShutterUpdate((int8_t)getTemperature(), (int8_t)getLightIntensity(), getUserTempPreference(), getUserLightPreference());
+	rollerShutterUpdate(getTemperatureMod(), getLightIntensityMod(), getUserTempPreference(), getUserLightPreference());
 }
 
 int main(void)
