@@ -1,6 +1,8 @@
 #ifndef DATAHANDLER_H_
 #define DATAHANDLER_H_
 
+#include <avr/io.h>
+
 #define TEMPERATURE_POOL_STORAGE_SIZE 20
 #define LIGHTINTENSITY_POOL_STORAGE_SIZE 20
 
