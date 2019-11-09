@@ -18,6 +18,7 @@ class SunBlindModel:
         self.module = module
         self.light_intensity = 75
         self.temperature = 25
+        self.free = False
 
     @staticmethod
     def get_mode(data):
@@ -106,15 +107,15 @@ class SunBlindModel:
         self.status_sun_blind = status
 
     def roll_out(self):
-        self.status_sun_blind = "open"
-        setupwindows.MakeWindows.roll_delay = setupwindows.MakeWindows.increase_roll_delay()
-        # call serial with unit and give self.max_roll_out as param
+        if not self.free:
+            self.status_sun_blind = "open"
+            # call serial with unit and give self.max_roll_out as param
         pass
 
     def roll_in(self):
-        self.status_sun_blind = "closed"
-        setupwindows.MakeWindows.roll_delay = setupwindows.MakeWindows.increase_roll_delay()
-        # call serial with unit and give self.min_roll_out as param
+        if not self.free:
+            self.status_sun_blind = "closed"
+            # call serial with unit and give self.min_roll_out as param
         pass
 
     def get_data_x(self):
@@ -154,6 +155,12 @@ class SunBlindModel:
             self.module.send_data(0xFE)  # Temperature
         except SerialException:
             self.module.close_connection()
+
+    def set_free(self):
+        if self.free:
+            self.free = False
+        else:
+            self.free = True
 
     def add_new_data(self, data):
         if 'Temperature' in data:

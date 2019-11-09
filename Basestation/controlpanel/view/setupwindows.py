@@ -14,8 +14,6 @@ from controlpanel.model import sunblindmodel
 class MakeWindows:
     subwindows = []
     roll_delay = 60
-    trigger = roll_delay
-    made_bigger = False
     thread_running = False
     MainWindow = None
     to_remove_from_subwindows = []
@@ -58,11 +56,6 @@ class MakeWindows:
         message.setText("Minimum must be lower then maximum.")
         message.setIcon(QMessageBox.Critical)
         message.exec_()
-
-    @staticmethod
-    def increase_roll_delay():
-        MakeWindows.made_bigger = True
-        MakeWindows.roll_delay = MakeWindows.roll_delay * 5
 
     @staticmethod
     def update_light_intensity_inputs():
@@ -114,12 +107,8 @@ class Thread(QThread):
                 except RuntimeError:
                     MakeWindows.to_remove_from_subwindows.append(subwindow)
                 QApplication.processEvents()
-                
-            if MakeWindows.roll_delay >= MakeWindows.trigger:
-                if MakeWindows.made_bigger:
-                    MakeWindows.made_bigger = False
-                    MakeWindows.roll_delay = MakeWindows.roll_delay / 5
 
+            if MakeWindows.roll_delay >= MakeWindows.roll_delay:
                 results = []
                 for unit in units.Units.units:
                     results.append(units.Units.check_weather_unit(unit))
@@ -131,8 +120,7 @@ class Thread(QThread):
                     MakeWindows.roll_delay = 0
                     for unit in units.Units.units:
                         units.Units.units[unit].roll_in()
-            print(MakeWindows.trigger)
-            MakeWindows.trigger += 1
+            MakeWindows.roll_delay += 1
 
             for x in MakeWindows.to_remove_from_subwindows:
                 MakeWindows.subwindows.remove(x)

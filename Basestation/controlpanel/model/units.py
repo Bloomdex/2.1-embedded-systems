@@ -138,3 +138,8 @@ class Units:
     def check_weather_unit(unit):
         sunblind = Units.units[unit]
         return sunblind.check_weather()
+
+    @staticmethod
+    def set_free_unit(unit):
+        sunblind = Units.units[unit]
+        sunblind.set_free()
