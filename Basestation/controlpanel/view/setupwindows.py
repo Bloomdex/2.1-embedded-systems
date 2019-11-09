@@ -1,10 +1,9 @@
-import threading
 import time
 
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import QThread
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QMessageBox
+from PyQt5.QtWidgets import QMessageBox
 import sys
 import controlpanel.view.mainwindow as mainwindow
 import controlpanel.view.subwindow as subwindow
@@ -23,7 +22,6 @@ class MakeWindows:
     @staticmethod
     def make_main_window():
         app = QtWidgets.QApplication(sys.argv)
-        print(app.thread())
         app.setWindowIcon(QIcon("dashboard_icon.png"))
         MainWindow = QtWidgets.QMainWindow()
         ui = mainwindow.Ui_MainWindow(MainWindow)
@@ -82,22 +80,16 @@ class MakeWindows:
 
     @staticmethod
     def check_update():
-        #update_open = False
         serialcontrol.detector.update_connected_arduinos()
         arduinos = serialcontrol.detector.arduinos
         for arduino in serialcontrol.detector.arduinos:
             if not serialcontrol.detector.arduinos[arduino].is_connected and not serialcontrol.detector.arduinos[arduino].had_connection:
                 serialcontrol.detector.arduinos[arduino].open_connection()
                 units.Units.add_unit_to_units(sunblindmodel.SunBlindModel(arduinos[arduino]))
-                #update_open = True
-            #if update_open:
-                #MakeWindows.MainWindow.add_items_menuOpen()
-                #update_open = False
 
 
 class Thread(QThread):
     def run(self):
-        #while len(MakeWindows.subwindows) > 0:
         while True:
             MakeWindows.check_update()
 
@@ -114,7 +106,6 @@ class Thread(QThread):
                         x.subwindow.setEnabled(False)
                 except RuntimeError:
                     MakeWindows.to_remove_from_subwindows.append(x)
-                #QApplication.processEvents()
             if MakeWindows.roll_delay >= 60:
                 results = []
                 for x in range(len(units.Units.units)):
@@ -134,14 +125,3 @@ class Thread(QThread):
                 MakeWindows.to_remove_from_subwindows.clear()
             for x in range(0, 10):
                 time.sleep(0.1)
-                #QApplication.processEvents()
-            #time.sleep(1)
-
-
-if __name__ == '__main__':
-    app = QApplication.instance()
-    if app is None:
-        app = QApplication([])
-    #units.Units.fill_units()
-    #MakeWindows.make_main_window()
-    MakeWindows.make_sub_window(1)

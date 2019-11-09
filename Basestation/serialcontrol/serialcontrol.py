@@ -13,7 +13,7 @@ class ModuleDetector:
 
     def get_arduino_module_type(self, port_id):
         if port_id in self.arduinos.keys():
-            print(port_id)
+            return self.arduinos[port_id].type
 
     def update_connected_arduinos(self):
         previous_connected_ports = self.arduinos.keys()
@@ -60,9 +60,8 @@ class Module:
             self.had_connection = True
             self.reader.start()
             print("Connected with Arduino:", self.com_device.device)
-        except Exception as e:
-            print(e)
-            print("Could not open connection with Arduino:", self.com_device.device)
+        except Exception:
+            pass
 
     def close_connection(self):
         self.ser.close()
@@ -95,6 +94,7 @@ class Module:
                         self.module.data.append(int(incoming_byte.hex(), 16))
                         self.module.data_is_updated = True
                     except:
+                        print("Lost connection with Arduino:", self.module.com_device.device)
                         self.module.close_connection()
                 else:
                     self.running = False

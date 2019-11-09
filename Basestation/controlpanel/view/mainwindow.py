@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 from functools import partial
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMdiSubWindow
 import controlpanel.view.subwindow as subwindow
 import controlpanel.view.setupwindows as setupwindows
@@ -81,15 +81,13 @@ class Ui_MainWindow(object):
         self.refreshButton.setText(_translate("mainwindow", "refresh"))
 
     def closeEvent(self, window):
-        #setupwindows.MakeWindows.to_remove.append()
-        print('is removed')
+        pass
 
     def add_subwindow(self, comPort):
         win = setupwindows.MakeWindows.make_sub_window(comPort)
         window = QMdiSubWindow()
         window.setWidget(win)
         window.setWindowFlags(QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMaximizeButtonHint)
-        #window.closeEvent(self.closeEvent(win))
         self.subWindowFrame.addSubWindow(window)
         window.show()
         self.subWindowFrame.tileSubWindows()
@@ -99,14 +97,11 @@ class Ui_MainWindow(object):
         for x in self.comportsmenulist:
             self.menuOpen.removeAction(x)
             x.deleteLater()
-            print("deleted item")
         self.comportsmenulist.clear()
-        print("cleared menu")
 
         # adding new buttons to menuOpen
         _translate = QtCore.QCoreApplication.translate
         for x in range(len(units.Units.units)):
-            print(self.menuOpen.actions())
             self.comportsmenulist.append(QtWidgets.QAction(self.MainWindow))
             self.comportsmenulist[x].setCheckable(False)
             self.comportsmenulist[x].setPriority(QtWidgets.QAction.LowPriority)

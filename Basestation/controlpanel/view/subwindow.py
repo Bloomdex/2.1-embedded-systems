@@ -3,6 +3,7 @@ import pyqtgraph as pg
 import controlpanel.model.units as units
 import os
 
+
 class Ui_SubWindow(object):
     def setupUi(self, SubWindow, unit):
         self.subwindow = SubWindow
@@ -332,16 +333,6 @@ class Ui_SubWindow(object):
         self.retranslateUi(SubWindow)
         self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(SubWindow)
-
-        '''
-        # start new thread to update
-        #lock = threading.Lock()
-        #lock.acquire(True)
-        #lock.release(True)
-        self.t = threading.Thread(target=self.update)
-        self.t.daemon = True
-        self.t.start()
-        '''
 
     def retranslateUi(self, SubWindow):
         _translate = QtCore.QCoreApplication.translate
