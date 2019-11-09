@@ -121,6 +121,6 @@ class Thread(QThread):
 
             for x in MakeWindows.to_remove_from_subwindows:
                 MakeWindows.subwindows.remove(x)
-                MakeWindows.to_remove_from_subwindows.clear()
+            MakeWindows.to_remove_from_subwindows.clear()
             for x in range(0, 10):
                 time.sleep(0.1)
