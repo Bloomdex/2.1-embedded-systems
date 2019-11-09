@@ -11,6 +11,10 @@ class Units:
             Units.units.append(sunblindmodel.SunBlindModel(arduinos[arduino]))
 
     @staticmethod
+    def add_unit_to_units(arduino):
+        Units.units.append(arduino)
+
+    @staticmethod
     def set_unit_min(unit, value):
         sunblind = Units.units[unit]
         sunblind.set_min_roll_out(value)

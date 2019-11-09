@@ -1,8 +1,7 @@
 from __future__ import absolute_import
-
 from functools import partial
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QMdiSubWindow
 import controlpanel.view.subwindow as subwindow
 import controlpanel.view.setupwindows as setupwindows
@@ -16,6 +15,7 @@ class Ui_MainWindow(object):
         self.comportsmenulist = []
         self.tileSubWindowsButton = QtWidgets.QAction(self.MainWindow)
         self.cascadeSubWindowButton = QtWidgets.QAction(self.MainWindow)
+        self.refreshButton = QtWidgets.QAction(self.MainWindow)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menuOpen = QtWidgets.QMenu(self.menubar)
         self.menuSubwindows = QtWidgets.QMenu(self.menubar)
@@ -52,8 +52,12 @@ class Ui_MainWindow(object):
         self.cascadeSubWindowButton.setCheckable(False)
         self.cascadeSubWindowButton.setPriority(QtWidgets.QAction.LowPriority)
         self.cascadeSubWindowButton.setObjectName("cascadeSubWindowButton")
+        self.refreshButton.setCheckable(False)
+        self.refreshButton.setPriority(QtWidgets.QAction.LowPriority)
+        self.refreshButton.setObjectName("refreshButton")
         self.menuSubwindows.addAction(self.tileSubWindowsButton)
         self.menuSubwindows.addAction(self.cascadeSubWindowButton)
+        self.menuOpen.addAction(self.refreshButton)
 
         # add items to menuOpen
         self.add_items_menuOpen()
@@ -63,8 +67,8 @@ class Ui_MainWindow(object):
 
         # make buttons in directory menuSubwindows active
         self.tileSubWindowsButton.triggered.connect(self.subWindowFrame.tileSubWindows)
-        # self.cascadeSubWindowButton.triggered.connect(self.subWindowFrame.cascadeSubWindows)
-        self.cascadeSubWindowButton.triggered.connect(self.add_items_menuOpen)
+        self.cascadeSubWindowButton.triggered.connect(self.subWindowFrame.cascadeSubWindows)
+        self.refreshButton.triggered.connect(self.add_items_menuOpen)
         QtCore.QMetaObject.connectSlotsByName(mainwindow)
 
     def retranslateUi(self, mainwindow):
@@ -74,6 +78,7 @@ class Ui_MainWindow(object):
         self.menuSubwindows.setTitle(_translate("mainwindow", "Subwindow"))
         self.tileSubWindowsButton.setText(_translate("mainwindow", "Tile"))
         self.cascadeSubWindowButton.setText(_translate("mainwindow", "Cascade"))
+        self.refreshButton.setText(_translate("mainwindow", "refresh"))
 
     def closeEvent(self, window):
         #setupwindows.MakeWindows.to_remove.append()
@@ -101,6 +106,7 @@ class Ui_MainWindow(object):
         # adding new buttons to menuOpen
         _translate = QtCore.QCoreApplication.translate
         for x in range(len(units.Units.units)):
+            print(self.menuOpen.actions())
             self.comportsmenulist.append(QtWidgets.QAction(self.MainWindow))
             self.comportsmenulist[x].setCheckable(False)
             self.comportsmenulist[x].setPriority(QtWidgets.QAction.LowPriority)
@@ -108,49 +114,3 @@ class Ui_MainWindow(object):
             self.menuOpen.addAction(self.comportsmenulist[x])
             self.comportsmenulist[x].triggered.connect(partial(self.add_subwindow, x))
             self.comportsmenulist[x].setText(_translate("mainwindow", "unit" + str(x)))
-            print("added item")
-
-'''
-    def update(self):
-        while True:
-            time.sleep(1)
-            for x in self.subWindowFrame.subWindowList():
-                #x.update_graph()
-                test = x(subwindow.Ui_SubWindow)
-                test.update_graph()
-
-    
-    def add_dockable_subwindow(self, mainwindow):
-        if setupwindows.MakeWindows.countSubWindows <= 6:
-            window = setupwindows.MakeWindows.makeSubWindow()
-            subwindow = QDockWidget("name", mainwindow)
-            subwindow.setWidget(window)
-            subwindow.setFloating(False)
-            subwindow.setFixedSize
-            mainwindow.setDockNestingEnabled(True)
-            if setupwindows.MakeWindows.countSubWindows < 2 or setupwindows.MakeWindows.countSubWindows == 4:
-                mainwindow.addDockWidget(Qt.TopDockWidgetArea, subwindow)
-            else:
-                mainwindow.addDockWidget(Qt.BottomDockWidgetArea, subwindow)
-
-            setupwindows.MakeWindows.countSubWindows += 1
-   
-    def add_subwindow_dockable(self, comPort):
-        print("test")
-        window = setupwindows.MakeWindows.makeSubWindow(comPort)
-        subwindow = QDockWidget("name", self.subWindowFrame)
-        subwindow.setWidget(window)
-        subwindow.setFloating(False)
-        #subwindow.setFixedSize()
-        #self.subWindowFrame.setDockNestingEnabled(True)
-        subwindow.show()
-    
-    def get_len_sub_window_list(self):
-        print(len(self.subWindowFrame.subWindowList))
-
-    def check_sub_window_list(self, element):
-        if element in self.subWindowFrame.subWindowList():
-            return True
-        else:
-            return False
-'''

@@ -1,49 +1,50 @@
 import serial.tools.list_ports
 from PyQt5 import QtWidgets, QtCore
-from serial import SerialException
 import os
 import serialcontrol.debugmenu as debugmenu
 import serialcontrol.datareader as datareader
 
+
 class ModuleDetector:
     def __init__(self):
         self.operating_system = os.name
-        self.arduinos = self.get_connected_arduino_ports()
+        self.arduinos = {}
+        self.update_connected_arduinos()
 
     def get_arduino_module_type(self, port_id):
         if port_id in self.arduinos.keys():
             print(port_id)
 
     def update_connected_arduinos(self):
-        self.arduinos = self.get_connected_arduino_ports()
+        previous_connected_ports = self.arduinos.keys()
+        current_connected_ports = [value.device for value in serial.tools.list_ports.comports()]
 
-    def get_connected_arduino_ports(self):
-        ports = serial.tools.list_ports.comports()
-        arduino_ports = {}
+        new_connected_ports = current_connected_ports - previous_connected_ports
 
-        for port in ports:
+        new_ports = [value for value in serial.tools.list_ports.comports() if value.device in new_connected_ports]
+
+        for port in new_ports:
             try:
                 if self.operating_system is 'nt':
                     print("Found a COM-device at:", port.device)
 
                     module = Module(port, port.device)
-                    arduino_ports.setdefault(port.device, module)
+                    self.arduinos.setdefault(port.device, module)
                 elif self.operating_system is 'posix':
                     if port.manufacturer.split()[0] == 'Arduino':
                         print("Found an Arduino at:", port.device)
 
-                        module = Module(port, port.name)
-                        arduino_ports.setdefault(port.name, module)
+                        module = Module(port, port.device)
+                        self.arduinos.setdefault(port.device, module)
             except:
                 print("Could not connect to possible Arduino:", port.device)
-
-        return arduino_ports
 
 
 class Module:
     def __init__(self, device, name):
         self.name = name
         self.is_connected = False
+        self.had_connection = False
         self.ser = None
         self.type = 'None'
         self.com_device = device
@@ -56,8 +57,11 @@ class Module:
             self.ser = serial.Serial(port=self.com_device.device, baudrate=19200, bytesize=8,
                                      parity='N', stopbits=1, timeout=None)
             self.is_connected = True
+            self.had_connection = True
             self.reader.start()
-        except SerialException:
+            print("Connected with Arduino:", self.com_device.device)
+        except Exception as e:
+            print(e)
             print("Could not open connection with Arduino:", self.com_device.device)
 
     def close_connection(self):
@@ -98,6 +102,9 @@ class Module:
 
         def stop(self):
             self.running = False
+
+
+detector = ModuleDetector()
 
 
 if __name__ == "__main__":

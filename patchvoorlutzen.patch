@@ -1,0 +1,166 @@
+diff --git a/Basestation/controlpanel/view/mainwindow.py b/Basestation/controlpanel/view/mainwindow.py
+index 22ae49e..3577fbb 100644
+--- a/Basestation/controlpanel/view/mainwindow.py
++++ b/Basestation/controlpanel/view/mainwindow.py
+@@ -1,5 +1,6 @@
+ from __future__ import absolute_import
+ 
++import threading
+ from functools import partial
+ from PyQt5 import QtCore, QtWidgets
+ from PyQt5.QtCore import Qt
+@@ -7,6 +8,7 @@ from PyQt5.QtWidgets import QMdiSubWindow
+ import controlpanel.view.subwindow as subwindow
+ import controlpanel.view.setupwindows as setupwindows
+ import controlpanel.model.units as units
++from serialcontrol.serialcontrol import ModuleDetector, Module
+ 
+ 
+ class Ui_MainWindow(object):
+@@ -67,6 +69,10 @@ class Ui_MainWindow(object):
+         self.cascadeSubWindowButton.triggered.connect(self.add_items_menuOpen)
+         QtCore.QMetaObject.connectSlotsByName(mainwindow)
+ 
++        t1 = threading.Thread(target=setupwindows.MakeWindows.update)
++        t1.daemon = True
++        t1.start()
++
+     def retranslateUi(self, mainwindow):
+         _translate = QtCore.QCoreApplication.translate
+         mainwindow.setWindowTitle(_translate("mainwindow", "MainWindow"))
+diff --git a/Basestation/controlpanel/view/setupwindows.py b/Basestation/controlpanel/view/setupwindows.py
+index 19fbfac..ffb3962 100644
+--- a/Basestation/controlpanel/view/setupwindows.py
++++ b/Basestation/controlpanel/view/setupwindows.py
+@@ -5,15 +5,16 @@ from PyQt5 import QtWidgets, QtCore
+ from PyQt5.QtGui import QIcon
+ from PyQt5.QtWidgets import QApplication, QMessageBox
+ import sys
+-from multiprocessing import Process
+ import controlpanel.view.mainwindow as mainwindow
+ import controlpanel.view.subwindow as subwindow
+ import controlpanel.model.units as units
++import serialcontrol.serialcontrol as serialcontrol
+ 
+ 
+ class MakeWindows:
+     subwindows = []
+     roll_delay = 60
++    thread_running = False
+     # mainwin = []
+     to_remove_from_subwindows = []
+ 
+@@ -34,10 +35,12 @@ class MakeWindows:
+         ui.setupUi(SubWindow, unit)
+         SubWindow.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+         MakeWindows.subwindows.append(ui)
++        '''
+         if len(MakeWindows.subwindows) == 1:
+             t1 = threading.Thread(target=MakeWindows.update)
+             t1.daemon = True
+             t1.start()
++        '''
+         return SubWindow
+ 
+     @staticmethod
+@@ -76,9 +79,26 @@ class MakeWindows:
+         for x in MakeWindows.subwindows:
+             x.max_roll_out_input.setValue(units.Units.get_unit_max(x.unit))
+ 
++    @staticmethod
++    def check_update():
++        arduinos = serialcontrol.detector.arduinos
++        serialcontrol.detector.update_connected_arduinos()
++        updated_arduinos = serialcontrol.detector.arduinos
++        new_arduinos = {k: updated_arduinos[k] for k in set(updated_arduinos) - set(arduinos)}
++        for arduino in serialcontrol.detector.arduinos:
++            if not serialcontrol.detector.arduinos[arduino].is_connected:
++                serialcontrol.detector.arduinos[arduino].open_connection()
++        if len(new_arduinos) > 0:
++            mainwindow.Ui_MainWindow.add_items_menuOpen
++
++
++
+     @staticmethod
+     def update():
+-        while len(MakeWindows.subwindows) > 0:
++        #while len(MakeWindows.subwindows) > 0:
++        while True:
++            MakeWindows.check_update()
++
+             for unit in units.Units.units:
+                 unit.generate_new_data()
+ 
+diff --git a/Basestation/main.py b/Basestation/main.py
+index c780b20..6eda87d 100644
+--- a/Basestation/main.py
++++ b/Basestation/main.py
+@@ -1,16 +1,21 @@
++import threading
++
+ from PyQt5 import QtWidgets
+ import controlpanel.model.units as units
+ from serialcontrol.serialcontrol import ModuleDetector
++import serialcontrol.serialcontrol as serialcontrol
++from controlpanel.view.setupwindows import MakeWindows
+ from controlpanel.view import mainwindow
+ 
+ if __name__ == "__main__":
+-    detector = ModuleDetector()
+ 
+-    units.Units.fill_units(detector.arduinos)
++    #units.Units.fill_units(serialcontrol.detector.arduinos)
++    #for arduino in serialcontrol.detector.arduinos:
++       # serialcontrol.detector.arduinos[arduino].open_connection()
+ 
+-    for arduino in detector.arduinos:
+-        detector.arduinos[arduino].open_connection()
++    MakeWindows.make_main_window()
+ 
++    ""'''
+     import sys
+ 
+     app = QtWidgets.QApplication(sys.argv)
+@@ -20,3 +25,4 @@ if __name__ == "__main__":
+     MainWindow.showMaximized()
+ 
+     sys.exit(app.exec_())
++    '''
+\ No newline at end of file
+diff --git a/Basestation/serialcontrol/serialcontrol.py b/Basestation/serialcontrol/serialcontrol.py
+index 5359868..5f444d0 100644
+--- a/Basestation/serialcontrol/serialcontrol.py
++++ b/Basestation/serialcontrol/serialcontrol.py
+@@ -1,10 +1,12 @@
+ import serial.tools.list_ports
+ from PyQt5 import QtWidgets, QtCore
+ from serial import SerialException
++import controlpanel.model.units as units
+ import os
+ import serialcontrol.debugmenu as debugmenu
+ import serialcontrol.datareader as datareader
+ 
++
+ class ModuleDetector:
+     def __init__(self):
+         self.operating_system = os.name
+@@ -57,7 +59,8 @@ class Module:
+                                      parity='N', stopbits=1, timeout=None)
+             self.is_connected = True
+             self.reader.start()
+-        except SerialException:
++        except Exception as e:
++            print(e)
+             print("Could not open connection with Arduino:", self.com_device.device)
+ 
+     def close_connection(self):
+@@ -100,6 +103,9 @@ class Module:
+             self.running = False
+ 
+ 
++detector = ModuleDetector()
++
++
+ if __name__ == "__main__":
+     import sys
+ 

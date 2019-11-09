@@ -1,16 +1,15 @@
-from PyQt5 import QtWidgets
-import controlpanel.model.units as units
-from serialcontrol.serialcontrol import ModuleDetector
-from controlpanel.view import mainwindow
+from controlpanel.view.setupwindows import MakeWindows
+
 
 if __name__ == "__main__":
-    detector = ModuleDetector()
 
-    units.Units.fill_units(detector.arduinos)
+    #units.Units.fill_units(serialcontrol.detector.arduinos)
+    #for arduino in serialcontrol.detector.arduinos:
+        #serialcontrol.detector.arduinos[arduino].open_connection()
 
-    for arduino in detector.arduinos:
-        detector.arduinos[arduino].open_connection()
+    MakeWindows.make_main_window()
 
+    ""'''
     import sys
 
     app = QtWidgets.QApplication(sys.argv)
@@ -20,3 +19,4 @@ if __name__ == "__main__":
     MainWindow.showMaximized()
 
     sys.exit(app.exec_())
+    '''

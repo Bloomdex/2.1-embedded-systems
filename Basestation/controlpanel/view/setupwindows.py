@@ -2,29 +2,37 @@ import threading
 import time
 
 from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtCore import QThread
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QMessageBox
 import sys
-from multiprocessing import Process
 import controlpanel.view.mainwindow as mainwindow
 import controlpanel.view.subwindow as subwindow
 import controlpanel.model.units as units
+import serialcontrol.serialcontrol as serialcontrol
+from controlpanel.model import sunblindmodel
 
 
 class MakeWindows:
     subwindows = []
     roll_delay = 60
-    # mainwin = []
+    thread_running = False
+    MainWindow = None
     to_remove_from_subwindows = []
 
     @staticmethod
     def make_main_window():
         app = QtWidgets.QApplication(sys.argv)
+        print(app.thread())
         app.setWindowIcon(QIcon("dashboard_icon.png"))
         MainWindow = QtWidgets.QMainWindow()
         ui = mainwindow.Ui_MainWindow(MainWindow)
         ui.setupUi(MainWindow)
         MainWindow.showMaximized()
+        thread = Thread()
+        thread.finished.connect(app.exit)
+        thread.start()
+        MakeWindows.MainWindow = ui
         sys.exit(app.exec_())
 
     @staticmethod
@@ -34,10 +42,6 @@ class MakeWindows:
         ui.setupUi(SubWindow, unit)
         SubWindow.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         MakeWindows.subwindows.append(ui)
-        if len(MakeWindows.subwindows) == 1:
-            t1 = threading.Thread(target=MakeWindows.update)
-            t1.daemon = True
-            t1.start()
         return SubWindow
 
     @staticmethod
@@ -77,8 +81,26 @@ class MakeWindows:
             x.max_roll_out_input.setValue(units.Units.get_unit_max(x.unit))
 
     @staticmethod
-    def update():
-        while len(MakeWindows.subwindows) > 0:
+    def check_update():
+        #update_open = False
+        serialcontrol.detector.update_connected_arduinos()
+        arduinos = serialcontrol.detector.arduinos
+        for arduino in serialcontrol.detector.arduinos:
+            if not serialcontrol.detector.arduinos[arduino].is_connected and not serialcontrol.detector.arduinos[arduino].had_connection:
+                serialcontrol.detector.arduinos[arduino].open_connection()
+                units.Units.add_unit_to_units(sunblindmodel.SunBlindModel(arduinos[arduino]))
+                #update_open = True
+            #if update_open:
+                #MakeWindows.MainWindow.add_items_menuOpen()
+                #update_open = False
+
+
+class Thread(QThread):
+    def run(self):
+        #while len(MakeWindows.subwindows) > 0:
+        while True:
+            MakeWindows.check_update()
+
             for unit in units.Units.units:
                 unit.generate_new_data()
 
@@ -92,7 +114,7 @@ class MakeWindows:
                         x.subwindow.setEnabled(False)
                 except RuntimeError:
                     MakeWindows.to_remove_from_subwindows.append(x)
-                QApplication.processEvents()
+                #QApplication.processEvents()
             if MakeWindows.roll_delay >= 60:
                 results = []
                 for x in range(len(units.Units.units)):
@@ -106,14 +128,13 @@ class MakeWindows:
                     for x in range(len(units.Units.units)):
                         units.Units.roll_in_unit(x)
             MakeWindows.roll_delay += 1
-            print(MakeWindows.roll_delay)
 
             for x in MakeWindows.to_remove_from_subwindows:
                 MakeWindows.subwindows.remove(x)
                 MakeWindows.to_remove_from_subwindows.clear()
-            for x in range(0, 9):
+            for x in range(0, 10):
                 time.sleep(0.1)
-                QApplication.processEvents()
+                #QApplication.processEvents()
             #time.sleep(1)
 
 

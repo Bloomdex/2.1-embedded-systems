@@ -1,8 +1,6 @@
 from serial import SerialException
 import controlpanel.view.setupwindows as setupwindows
 from collections import Counter
-import traceback
-import random
 
 
 class SunBlindModel:
@@ -38,7 +36,6 @@ class SunBlindModel:
     def check_weather(self):
         mode_light = SunBlindModel.get_mode(self.data_light)
         mode_temp = SunBlindModel.get_mode(self.data_temp)
-        print("mode_light " + str(mode_light) + " mode_temp " + str(mode_temp))
 
         if isinstance(mode_light, int) and self.status_light_sensor == "Good":
             if mode_light >= self.light_intensity and self.status_sun_blind == "closed":
@@ -61,7 +58,6 @@ class SunBlindModel:
         if min_roll_out < self.max_roll_out:
             self.min_roll_out = round(min_roll_out, 2)
             setupwindows.MakeWindows.update_min_inputs()
-            print("self.min_roll_out is set to " + str(self.min_roll_out))
         else:
             setupwindows.MakeWindows.make_min_error()
 
@@ -69,7 +65,6 @@ class SunBlindModel:
         if max_roll_out > self.min_roll_out:
             self.max_roll_out = round(max_roll_out, 2)
             setupwindows.MakeWindows.update_max_inputs()
-            print("self.max_roll_out is set to " + str(self.max_roll_out))
         else:
             setupwindows.MakeWindows.make_max_error()
 
@@ -82,7 +77,6 @@ class SunBlindModel:
     def set_light_intensity(self, value):
         self.light_intensity = value
         setupwindows.MakeWindows.update_light_intensity_inputs()
-        print("self.light_intensity is set to " + str(self.light_intensity))
 
     def set_temp(self, value):
         self.temperature = value
@@ -159,8 +153,7 @@ class SunBlindModel:
             # Sends instructions to module to return temperature and light
             self.module.send_data(0xFD)  # Light
             self.module.send_data(0xFE)  # Temperature
-        except SerialException as e:
-            print(e)
+        except SerialException:
             self.module.close_connection()
 
     def add_new_data(self, data):
