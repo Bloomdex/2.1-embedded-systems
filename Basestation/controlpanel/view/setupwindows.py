@@ -2,7 +2,7 @@ import time
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import QThread
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QApplication
 import sys
 import controlpanel.view.mainwindow as mainwindow
 import controlpanel.view.subwindow as subwindow
@@ -14,6 +14,8 @@ from controlpanel.model import sunblindmodel
 class MakeWindows:
     subwindows = []
     roll_delay = 60
+    trigger = roll_delay
+    made_bigger = False
     thread_running = False
     MainWindow = None
     to_remove_from_subwindows = []
@@ -58,6 +60,11 @@ class MakeWindows:
         message.exec_()
 
     @staticmethod
+    def increase_roll_delay():
+        MakeWindows.made_bigger = True
+        MakeWindows.roll_delay = MakeWindows.roll_delay * 5
+
+    @staticmethod
     def update_light_intensity_inputs():
         for x in MakeWindows.subwindows:
             x.light_intensity_input.setValue(units.Units.get_unit_light_intensity(x.unit))
@@ -90,37 +97,61 @@ class MakeWindows:
 class Thread(QThread):
     def run(self):
         while True:
+
             MakeWindows.check_update()
 
             for unit in units.Units.units:
-                unit.generate_new_data()
+                units.Units.units[unit].generate_new_data()
 
-            for x in MakeWindows.subwindows:
+            for subwindow in MakeWindows.subwindows:
                 try:
-                    if x.check_if_module_is_connected():
-                        x.subwindow.setEnabled(True)
-                        x.update()
+                    if subwindow.check_if_module_is_connected():
+                        subwindow.subwindow.setEnabled(True)
+                        subwindow.update()
                     else:
-                        units.Units.units[x.unit].module.open_connection()
-                        x.subwindow.setEnabled(False)
+                        units.Units.units[subwindow.unit].module.open_connection()
+                        subwindow.subwindow.setEnabled(False)
                 except RuntimeError:
-                    MakeWindows.to_remove_from_subwindows.append(x)
-            if MakeWindows.roll_delay >= 60:
+                    MakeWindows.to_remove_from_subwindows.append(subwindow)
+                QApplication.processEvents()
+                
+            if MakeWindows.roll_delay >= MakeWindows.trigger:
+                if MakeWindows.made_bigger:
+                    MakeWindows.made_bigger = False
+                    MakeWindows.roll_delay = MakeWindows.roll_delay / 5
+
                 results = []
-                for x in range(len(units.Units.units)):
-                    results.append(units.Units.check_weather_unit(x))
+                for unit in units.Units.units:
+                    results.append(units.Units.check_weather_unit(unit))
                 if "open" in results:
                     MakeWindows.roll_delay = 0
-                    for x in range(len(units.Units.units)):
-                        units.Units.roll_out_unit(x)
+                    for unit in units.Units.units:
+                        units.Units.units[unit].roll_out()
                 elif "close" in results:
                     MakeWindows.roll_delay = 0
-                    for x in range(len(units.Units.units)):
-                        units.Units.roll_in_unit(x)
-            MakeWindows.roll_delay += 1
+                    for unit in units.Units.units:
+                        units.Units.units[unit].roll_in()
+            print(MakeWindows.trigger)
+            MakeWindows.trigger += 1
 
             for x in MakeWindows.to_remove_from_subwindows:
                 MakeWindows.subwindows.remove(x)
             MakeWindows.to_remove_from_subwindows.clear()
+
+            remove_from_dict = []
+            for arduino in serialcontrol.detector.arduinos:
+                close_connection = True
+                if serialcontrol.detector.arduinos[arduino].is_connected:
+                    close_connection = False
+                for subwindow in MakeWindows.subwindows:
+                    if subwindow.unit == arduino:
+                        close_connection = False
+                if close_connection:
+                    remove_from_dict.append(arduino)
+            for arduino in remove_from_dict:
+                print(arduino)
+                del units.Units.units[arduino]
+                del serialcontrol.detector.arduinos[arduino]
             for x in range(0, 10):
                 time.sleep(0.1)
+                QApplication.processEvents()

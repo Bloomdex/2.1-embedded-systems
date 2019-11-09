@@ -2,17 +2,17 @@ import controlpanel.model.sunblindmodel as sunblindmodel
 
 
 class Units:
-    units = []
+    units = {}
 
     @staticmethod
     def fill_units(arduinos):
         for arduino in arduinos:
             arduinos[arduino].reader.start()
-            Units.units.append(sunblindmodel.SunBlindModel(arduinos[arduino]))
+            Units.units[arduino.name] = sunblindmodel.SunBlindModel(arduinos[arduino])
 
     @staticmethod
     def add_unit_to_units(arduino):
-        Units.units.append(arduino)
+        Units.units[arduino.module.name] = arduino
 
     @staticmethod
     def set_unit_min(unit, value):

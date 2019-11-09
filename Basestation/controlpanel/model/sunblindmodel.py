@@ -107,11 +107,13 @@ class SunBlindModel:
 
     def roll_out(self):
         self.status_sun_blind = "open"
+        setupwindows.MakeWindows.roll_delay = setupwindows.MakeWindows.increase_roll_delay()
         # call serial with unit and give self.max_roll_out as param
         pass
 
     def roll_in(self):
         self.status_sun_blind = "closed"
+        setupwindows.MakeWindows.roll_delay = setupwindows.MakeWindows.increase_roll_delay()
         # call serial with unit and give self.min_roll_out as param
         pass
 
@@ -125,19 +127,19 @@ class SunBlindModel:
         return self.data_light
 
     def get_last_data_temp(self):
-        if len(self.data_temp) > 0 and self.status_temp_sensor == "good":
+        if len(self.data_temp) > 0 and self.status_temp_sensor == "Good":
             return self.data_temp[len(self.data_temp) - 1]
         else:
             return "Not Available"
 
     def get_last_data_light(self):
-        if len(self.data_light) > 0 and self.status_light_sensor == "good":
+        if len(self.data_light) > 0 and self.status_light_sensor == "Good":
             return self.data_light[len(self.data_light) - 1]
         else:
             return "Not Available"
 
     def get_last_data_ultrasoon(self):
-        if len(self.data_ultrasoon) > 0 and self.status_ultrasoon_sensor == "good":
+        if len(self.data_ultrasoon) > 0 and self.status_ultrasoon_sensor == "Good":
             return self.data_ultrasoon[len(self.data_ultrasoon) - 1]
         else:
             return "Not Available"
