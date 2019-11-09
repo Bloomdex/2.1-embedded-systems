@@ -74,9 +74,6 @@ class Ui_MainWindow(object):
         self.tileSubWindowsButton.setText(_translate("mainwindow", "Tile"))
         self.cascadeSubWindowButton.setText(_translate("mainwindow", "Cascade"))
 
-    def closeEvent(self, window):
-        pass
-
     def add_subwindow(self, comPort):
         win = setupwindows.MakeWindows.make_sub_window(comPort)
         window = QMdiSubWindow()

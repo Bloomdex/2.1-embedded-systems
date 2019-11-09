@@ -1,5 +1,4 @@
 import time
-
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import QThread
 from PyQt5.QtGui import QIcon
