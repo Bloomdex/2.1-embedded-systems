@@ -157,6 +157,7 @@ class SunBlindModel:
             self.module.close_connection()
 
     def set_free(self):
+        self.module.send_data(0xFA)
         if self.free:
             self.free = False
         else:
