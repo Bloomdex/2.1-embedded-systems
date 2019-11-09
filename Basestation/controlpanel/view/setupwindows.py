@@ -2,7 +2,7 @@ import time
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import QThread
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QApplication
 import sys
 import controlpanel.view.mainwindow as mainwindow
 import controlpanel.view.subwindow as subwindow

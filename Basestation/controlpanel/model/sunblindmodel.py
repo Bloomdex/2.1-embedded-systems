@@ -125,19 +125,19 @@ class SunBlindModel:
         return self.data_light
 
     def get_last_data_temp(self):
-        if len(self.data_temp) > 0 and self.status_temp_sensor == "good":
+        if len(self.data_temp) > 0 and self.status_temp_sensor == "Good":
             return self.data_temp[len(self.data_temp) - 1]
         else:
             return "Not Available"
 
     def get_last_data_light(self):
-        if len(self.data_light) > 0 and self.status_light_sensor == "good":
+        if len(self.data_light) > 0 and self.status_light_sensor == "Good":
             return self.data_light[len(self.data_light) - 1]
         else:
             return "Not Available"
 
     def get_last_data_ultrasoon(self):
-        if len(self.data_ultrasoon) > 0 and self.status_ultrasoon_sensor == "good":
+        if len(self.data_ultrasoon) > 0 and self.status_ultrasoon_sensor == "Good":
             return self.data_ultrasoon[len(self.data_ultrasoon) - 1]
         else:
             return "Not Available"
@@ -150,6 +150,7 @@ class SunBlindModel:
             # Sends instructions to module to return temperature and light
             self.module.send_data(0xFD)  # Light
             self.module.send_data(0xFE)  # Temperature
+            self.module.send_data(0xF9)  # Status
         except SerialException:
             self.module.close_connection()
 

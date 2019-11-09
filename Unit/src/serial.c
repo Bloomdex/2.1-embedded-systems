@@ -47,7 +47,7 @@ void transmitBufferData(char buffercode, int8_t storagebuffer[], unsigned char s
 
     transmitData(0x00);
     transmitData(buffercode);
-    transmitData(0x00);
+    transmitData(0x0A);
 }
 
 void transmitModuleStatus() {
@@ -60,7 +60,7 @@ void transmitModuleStatus() {
 
     transmitData(0x00);
     transmitData(CODE_MODULE_STATUS);
-    transmitData(0x00);
+    transmitData(0x0A);
 }
 
 // Handles possible instruction in the received_data queue.
