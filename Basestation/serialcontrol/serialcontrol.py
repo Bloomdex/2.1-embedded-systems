@@ -70,6 +70,8 @@ class Module:
 
     def send_data(self, hex_byte):
         if self.is_connected:
+            if hex_byte < 0:
+                hex_byte = 256 + hex_byte
             self.ser.write(bytearray([hex_byte]))
 
     def decode_retrieved_data(self):
