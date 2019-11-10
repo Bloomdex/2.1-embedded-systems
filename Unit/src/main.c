@@ -52,7 +52,10 @@ void init_SCH(void)
 }
 
 void updateSensorData_task(void) {
-	updateSensorData();
+	int8_t temperatureReading = (int8_t)getTemperature();
+	int8_t lightReading = (int8_t)getLightIntensity();
+	
+	updateSensorData(temperatureReading, lightReading);
 }
 
 void temperature_task(void)

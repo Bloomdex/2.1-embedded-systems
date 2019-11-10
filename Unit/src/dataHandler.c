@@ -10,10 +10,12 @@ int8_t lightIntensity_pool[LIGHTINTENSITY_POOL_STORAGE_SIZE];
 uint8_t lightIntensity_pool_head_index = 0;
 
 
-void updateSensorData() {
-	// Get sensor data
-	int8_t currentTemperature = (int8_t)getTemperature();
-	int8_t currentLightIntensity = (int8_t)getLightIntensity();
+void updateSensorData(int8_t currentTemperature, int8_t currentLightIntensity) {
+	// Check for invalid values
+	if(currentTemperature == INVALID_READING_VALUE)
+		currentTemperature = 0;
+	if(currentLightIntensity == INVALID_READING_VALUE)
+		currentLightIntensity = 0;
 	
 	// Update our pools
 	temperature_pool[temperature_pool_head_index] = currentTemperature;
