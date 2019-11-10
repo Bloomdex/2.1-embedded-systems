@@ -85,6 +85,7 @@ class MakeWindows:
             if not serialcontrol.detector.arduinos[arduino].is_connected and not serialcontrol.detector.arduinos[arduino].had_connection:
                 serialcontrol.detector.arduinos[arduino].open_connection()
                 units.Units.add_unit_to_units(sunblindmodel.SunBlindModel(arduinos[arduino]))
+            QApplication.processEvents()
 
 
 class Thread(QThread):
@@ -95,6 +96,7 @@ class Thread(QThread):
 
             for unit in units.Units.units:
                 units.Units.units[unit].generate_new_data()
+                QApplication.processEvents()
 
             for subwindow in MakeWindows.subwindows:
                 try:

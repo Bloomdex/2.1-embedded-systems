@@ -50,9 +50,11 @@ class Ui_MainWindow(object):
         self.tileSubWindowsButton.setCheckable(False)
         self.tileSubWindowsButton.setPriority(QtWidgets.QAction.LowPriority)
         self.tileSubWindowsButton.setObjectName("tileSubWindowButton")
+        self.tileSubWindowsButton.setShortcut("Alt+Shift+t")
         self.cascadeSubWindowButton.setCheckable(False)
         self.cascadeSubWindowButton.setPriority(QtWidgets.QAction.LowPriority)
         self.cascadeSubWindowButton.setObjectName("cascadeSubWindowButton")
+        self.cascadeSubWindowButton.setShortcut("Alt+Shift+c")
         self.menuSubwindows.addAction(self.tileSubWindowsButton)
         self.menuSubwindows.addAction(self.cascadeSubWindowButton)
 

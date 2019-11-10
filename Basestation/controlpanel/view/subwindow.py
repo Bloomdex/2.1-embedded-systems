@@ -206,7 +206,7 @@ class Ui_SubWindow(object):
 
         #self.update_graph()
         labelStyle = {'color': '#FFF', 'font-size': '10pt'}
-        self.graph.setLabel('left', 'Temperature/Light intensity', **labelStyle)
+        self.graph.setLabel('left', 'Datavalue', **labelStyle)
         self.graph.setLabel('bottom', 'Datapoint', **labelStyle)
         self.gridLayout_2.addWidget(self.graph, 0, 0, 1, 1)
 
@@ -341,7 +341,7 @@ class Ui_SubWindow(object):
 
     def retranslateUi(self, SubWindow):
         _translate = QtCore.QCoreApplication.translate
-        SubWindow.setWindowTitle(_translate("SubWindow", "unit" + str(self.unit)))
+        SubWindow.setWindowTitle(_translate("SubWindow", self.unit))
         self.label_functions.setText(_translate("SubWindow", "Functions"))
         self.label_roll_out.setText(_translate("SubWindow", "Set sun blind roll out "))
         self.free_button.setText(_translate("SubWindow", "FREE"))
@@ -355,7 +355,7 @@ class Ui_SubWindow(object):
         self.set_temperature_button.setText(_translate("SubWindow", "Set Temperature"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.Data), _translate("SubWindow", "Data"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.Status), _translate("SubWindow", "Status"))
-        self.sunBlindName.setText(_translate("SubWindow", "Unit " + str(self.unit)))
+        self.sunBlindName.setText(_translate("SubWindow", self.unit))
         item = self.tableWidget.verticalHeaderItem(0)
         item.setText(_translate("SubWindow", "light sensor"))
         item = self.tableWidget.verticalHeaderItem(1)
