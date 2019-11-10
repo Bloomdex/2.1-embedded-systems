@@ -70,11 +70,24 @@ class Module:
 
     def send_data(self, hex_byte):
         if self.is_connected:
+            if hex_byte < 0:
+                hex_byte = 256 + hex_byte
             self.ser.write(bytearray([hex_byte]))
 
     def decode_retrieved_data(self):
         decoded_signal = datareader.DataReader.decode_and_return_data(self.data)
         decoded_signal = dict((datareader.data_types[key], value) for (key, value) in decoded_signal.items())
+
+        if 'Status' in decoded_signal.keys():
+            status_signal = decoded_signal['Status']
+            roller_shutter_states = ['closed', 'closing', 'opening', 'open', 'none']
+            sensor_states = ["Not Available", "Good"]
+
+            decoded_signal['Status'] = {}
+            decoded_signal['Status'].setdefault('SunBlindForced', bool(status_signal[0]))
+            decoded_signal['Status'].setdefault('SunBlind', roller_shutter_states[status_signal[1]])
+            decoded_signal['Status'].setdefault('Temperature', sensor_states[status_signal[2]])
+            decoded_signal['Status'].setdefault('Light', sensor_states[status_signal[3]])
 
         self.data.clear()
         return decoded_signal

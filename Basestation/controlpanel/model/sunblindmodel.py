@@ -76,10 +76,14 @@ class SunBlindModel:
 
     def set_light_intensity(self, value):
         self.light_intensity = value
+        self.module.send_data(0xF7)
+        self.module.send_data(value)
         setupwindows.MakeWindows.update_light_intensity_inputs()
 
     def set_temp(self, value):
         self.temperature = value
+        self.module.send_data(0xF8)
+        self.module.send_data(value)
         setupwindows.MakeWindows.update_temp_inputs()
 
     def get_light_intensity(self):
@@ -107,11 +111,13 @@ class SunBlindModel:
 
     def roll_out(self):
         self.status_sun_blind = "open"
+        self.module.send_data(0xFB)
         # call serial with unit and give self.max_roll_out as param
         pass
 
     def roll_in(self):
         self.status_sun_blind = "closed"
+        self.module.send_data(0xFC)
         # call serial with unit and give self.min_roll_out as param
         pass
 
@@ -125,19 +131,19 @@ class SunBlindModel:
         return self.data_light
 
     def get_last_data_temp(self):
-        if len(self.data_temp) > 0 and self.status_temp_sensor == "good":
+        if len(self.data_temp) > 0 and self.status_temp_sensor == "Good":
             return self.data_temp[len(self.data_temp) - 1]
         else:
             return "Not Available"
 
     def get_last_data_light(self):
-        if len(self.data_light) > 0 and self.status_light_sensor == "good":
+        if len(self.data_light) > 0 and self.status_light_sensor == "Good":
             return self.data_light[len(self.data_light) - 1]
         else:
             return "Not Available"
 
     def get_last_data_ultrasoon(self):
-        if len(self.data_ultrasoon) > 0 and self.status_ultrasoon_sensor == "good":
+        if len(self.data_ultrasoon) > 0 and self.status_ultrasoon_sensor == "Good":
             return self.data_ultrasoon[len(self.data_ultrasoon) - 1]
         else:
             return "Not Available"
@@ -150,6 +156,7 @@ class SunBlindModel:
             # Sends instructions to module to return temperature and light
             self.module.send_data(0xFD)  # Light
             self.module.send_data(0xFE)  # Temperature
+            self.module.send_data(0xF9)  # Status
         except SerialException:
             self.module.close_connection()
 
