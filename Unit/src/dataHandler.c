@@ -11,18 +11,31 @@ uint8_t lightIntensity_pool_head_index = 0;
 
 
 void updateSensorData(int8_t currentTemperature, int8_t currentLightIntensity) {
-	// Check for invalid values
-	if(currentTemperature == INVALID_READING_VALUE)
-		currentTemperature = 0;
-	if(currentLightIntensity == INVALID_READING_VALUE)
-		currentLightIntensity = 0;
+	if(currentTemperature != INVALID_READING_VALUE) {
+		// Update our temperature pool
+		temperature_pool[temperature_pool_head_index] = currentTemperature;
+		temperature_pool_head_index = (temperature_pool_head_index + 1) % TEMPERATURE_POOL_STORAGE_SIZE;
+	}
+	else {
+		// Update our temperature pool to only have INVALID_READING_VALUE
+		for (uint8_t i = 0; i < TEMPERATURE_POOL_STORAGE_SIZE; i++)
+			temperature_pool[i] = INVALID_READING_VALUE;
+			
+		temperature_pool_head_index = 0;
+	}
 	
-	// Update our pools
-	temperature_pool[temperature_pool_head_index] = currentTemperature;
-	temperature_pool_head_index = (temperature_pool_head_index + 1) % TEMPERATURE_POOL_STORAGE_SIZE;
-	
-	lightIntensity_pool[lightIntensity_pool_head_index] = currentLightIntensity;
-	lightIntensity_pool_head_index = (lightIntensity_pool_head_index + 1) % LIGHTINTENSITY_POOL_STORAGE_SIZE;
+	if(currentLightIntensity != INVALID_READING_VALUE) {
+		// Update our light intensity pool
+		lightIntensity_pool[lightIntensity_pool_head_index] = currentLightIntensity;
+		lightIntensity_pool_head_index = (lightIntensity_pool_head_index + 1) % LIGHTINTENSITY_POOL_STORAGE_SIZE;
+	}
+	else {
+		// Update our temperature pool to only have INVALID_READING_VALUE		
+		for (uint8_t i = 0; i < LIGHTINTENSITY_POOL_STORAGE_SIZE; i++)
+			lightIntensity_pool[i] = INVALID_READING_VALUE;
+
+		lightIntensity_pool_head_index = 0;
+	}
 }
 
 int8_t getTemperatureMod() {

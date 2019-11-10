@@ -74,9 +74,7 @@ void light_task(void)
 
 void ledKeyUnit_task(void)
 {
-	int8_t temperatureReading = getTemperatureMod();
-	int8_t lightReading = getLightIntensityMod();
-	updateLedKeyUnit(temperatureReading, lightReading);
+	updateLedKeyUnit(getTemperatureMod(), getLightIntensityMod());
 }
 
 void ledKeyUnitButtonReading_task(void)
