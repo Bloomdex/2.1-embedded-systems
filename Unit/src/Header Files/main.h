@@ -3,6 +3,7 @@
 
 void setup(void);
 void init_SCH(void);
+void updateSensorData_task(void);
 void temperature_task(void);
 void light_task(void);
 void ledKeyUnit_task(void);
