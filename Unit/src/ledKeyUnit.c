@@ -269,14 +269,10 @@ void updateDisplayingValues(int8_t tempVal, int8_t lightVal) {
 		fillArrayWithGiven(temperatureDigitArray, 0, 4, 0x00);
 
 	// Compose lightIntensity digit array
-	if(lightVal != INVALID_READING_VALUE) {
+	if(lightVal != INVALID_READING_VALUE)
 		valToDigitsInArray(lightIntensityDigitArray, 4, lightVal);
-		transmitData(lightVal);
-	}
-	else {
+	else
 		fillArrayWithGiven(lightIntensityDigitArray, 0, 4, 0x00);
-		transmitData(lightVal);
-	}
 	
 	// Compose array for display
 	appendTwoLedKeyUnitArrays(finalDigitArray, temperatureDigitArray, 4, lightIntensityDigitArray, 4);
