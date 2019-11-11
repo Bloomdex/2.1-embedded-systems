@@ -10,6 +10,7 @@ extern volatile uint8_t received_data_index;
 
 extern int8_t currentTemperatureReading;
 extern int8_t currentLightReading;
+extern int8_t currentDistanceReading;
 
 // Instruction Codes - Sensor data
 #define CODE_TEMPERATURE 0xFE
@@ -35,6 +36,7 @@ extern int8_t currentLightReading;
 
 void addTemperatureToBuffer(int8_t value);
 void addLightToBuffer(int8_t value);
+void addDistanceToBuffer(int8_t value);
 void transmitBufferData(char buffercode, int8_t storagebuffer[], unsigned char storageSize, int8_t bufferIndex);
 void transmitModuleStatus();
 void handleInstructions();

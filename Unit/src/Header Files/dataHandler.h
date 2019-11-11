@@ -10,6 +10,7 @@
 void updateSensorData(int8_t currentTemperature, int8_t currentLightIntensity, int8_t currentDistance);
 int8_t getTemperatureMod();
 int8_t getLightIntensityMod();
+int8_t getDistanceMod();
 
 int8_t getMode(int8_t array[], uint8_t size) ;
 
