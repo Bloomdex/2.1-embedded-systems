@@ -14,6 +14,7 @@ volatile uint8_t received_data_index = 0;
 // Current real Data reading.
 int8_t currentTemperatureReading = INVALID_READING_VALUE;
 int8_t currentLightReading = INVALID_READING_VALUE;
+int8_t currentDistanceReading = INVALID_READING_VALUE;
 
 // Buffer for measured temperatures.
 int8_t temperatures[TEMPERATURE_STORAGE_SIZE];
@@ -67,6 +68,7 @@ void transmitModuleStatus() {
     transmitData(getRollerShutterState());
     transmitData(currentTemperatureReading != INVALID_READING_VALUE);
     transmitData(currentLightReading != INVALID_READING_VALUE);
+    transmitData(currentDistanceReading != INVALID_READING_VALUE);
 
     transmitData(0x00);
     transmitData(CODE_MODULE_STATUS);
