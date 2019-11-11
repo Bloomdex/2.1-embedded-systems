@@ -98,6 +98,7 @@ void handleInstructions(void) {
                 transmitBufferData(CODE_DISTANCE, distances, DISTANCE_STORAGE_SIZE, distances_head_index);
                 memset(distances, 0, DISTANCE_STORAGE_SIZE);
                 distances_head_index = 0;
+                break;
             case CODE_ROLLERSHUTTER_FORCE_CLOSE:
                 setShutterForceClosed();
                 break;

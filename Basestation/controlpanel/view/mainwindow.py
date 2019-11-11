@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import QMdiSubWindow
 import controlpanel.view.subwindow as subwindow
 import controlpanel.view.setupwindows as setupwindows
 import controlpanel.model.units as units
+from serialcontrol import serialcontrol
 
 
 class Ui_MainWindow(object):
@@ -49,9 +50,11 @@ class Ui_MainWindow(object):
         self.tileSubWindowsButton.setCheckable(False)
         self.tileSubWindowsButton.setPriority(QtWidgets.QAction.LowPriority)
         self.tileSubWindowsButton.setObjectName("tileSubWindowButton")
+        self.tileSubWindowsButton.setShortcut("Alt+Shift+t")
         self.cascadeSubWindowButton.setCheckable(False)
         self.cascadeSubWindowButton.setPriority(QtWidgets.QAction.LowPriority)
         self.cascadeSubWindowButton.setObjectName("cascadeSubWindowButton")
+        self.cascadeSubWindowButton.setShortcut("Alt+Shift+c")
         self.menuSubwindows.addAction(self.tileSubWindowsButton)
         self.menuSubwindows.addAction(self.cascadeSubWindowButton)
 
@@ -74,8 +77,8 @@ class Ui_MainWindow(object):
         self.tileSubWindowsButton.setText(_translate("mainwindow", "Tile"))
         self.cascadeSubWindowButton.setText(_translate("mainwindow", "Cascade"))
 
-    def add_subwindow(self, comPort):
-        win = setupwindows.MakeWindows.make_sub_window(comPort)
+    def add_subwindow(self, unit):
+        win = setupwindows.MakeWindows.make_sub_window(unit)
         window = QMdiSubWindow()
         window.setWidget(win)
         window.setWindowFlags(QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMaximizeButtonHint)
@@ -92,11 +95,12 @@ class Ui_MainWindow(object):
 
         # adding new buttons to menuOpen
         _translate = QtCore.QCoreApplication.translate
-        for x in range(len(units.Units.units)):
+        for arduino in serialcontrol.detector.arduinos:
             self.comportsmenulist.append(QtWidgets.QAction(self.MainWindow))
-            self.comportsmenulist[x].setCheckable(False)
-            self.comportsmenulist[x].setPriority(QtWidgets.QAction.LowPriority)
-            self.comportsmenulist[x].setObjectName("addSunblindButton")
-            self.menuOpen.addAction(self.comportsmenulist[x])
-            self.comportsmenulist[x].triggered.connect(partial(self.add_subwindow, x))
-            self.comportsmenulist[x].setText(_translate("mainwindow", "unit" + str(x)))
+            index = len(self.comportsmenulist) - 1
+            self.comportsmenulist[index].setCheckable(False)
+            self.comportsmenulist[index].setPriority(QtWidgets.QAction.LowPriority)
+            self.comportsmenulist[index].setObjectName("addSunblindButton")
+            self.menuOpen.addAction(self.comportsmenulist[index])
+            self.comportsmenulist[index].triggered.connect(partial(self.add_subwindow, arduino))
+            self.comportsmenulist[index].setText(_translate("mainwindow", arduino))

@@ -18,6 +18,7 @@ class SunBlindModel:
         self.module = module
         self.light_intensity = 75
         self.temperature = 25
+        self.force = False
 
     @staticmethod
     def get_mode(data):
@@ -114,16 +115,10 @@ class SunBlindModel:
         self.status_sun_blind = status
 
     def roll_out(self):
-        self.status_sun_blind = "open"
         self.module.send_data(0xFB)
-        # call serial with unit and give self.max_roll_out as param
-        pass
 
     def roll_in(self):
-        self.status_sun_blind = "closed"
         self.module.send_data(0xFC)
-        # call serial with unit and give self.min_roll_out as param
-        pass
 
     def get_data_x(self):
         return self.data_x
@@ -165,6 +160,9 @@ class SunBlindModel:
         except SerialException:
             self.module.close_connection()
 
+    def set_free(self):
+        self.module.send_data(0xFA)
+
     def add_new_data(self, data):
         if 'Temperature' in data:
             for temp in data['Temperature']:
@@ -182,6 +180,8 @@ class SunBlindModel:
                 if len(self.data_ultrasoon) > 100:
                     self.data_ultrasoon.pop(0)
         if 'Status' in data:
+            if 'SunBlindForced' in data['Status']:
+                self.force = data['Status']['SunBlindForced']
             if 'SunBlind' in data['Status']:
                 self.status_sun_blind = data['Status']['SunBlind']
             if 'Temperature' in data['Status']:

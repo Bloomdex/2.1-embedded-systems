@@ -51,7 +51,7 @@ class Ui_SubWindow(object):
         self.max_roll_out_input.setMaximum(2.5)
         self.max_roll_out_input.setValue(units.Units.get_unit_max(self.unit))
         self.max_roll_out_input.valueChanged.connect(lambda x: self.set_max_input_value())
-        self.gridLayout.addWidget(self.max_roll_out_input, 5, 0, 1, 1)
+        self.gridLayout.addWidget(self.max_roll_out_input, 4, 0, 1, 1)
         # set_min_roll_out_button
         self.set_min_roll_out_button = QtWidgets.QPushButton(self.centralwidget)
         self.set_min_roll_out_button.setObjectName("set_min_roll_out_Button")
@@ -63,7 +63,7 @@ class Ui_SubWindow(object):
         self.set_max_roll_out_button.setObjectName("set_max_roll_out_button")
         self.max_input_value = self.max_roll_out_input.value()
         self.set_max_roll_out_button.clicked.connect(lambda x: units.Units.set_unit_max(self.unit, self.max_input_value))
-        self.gridLayout.addWidget(self.set_max_roll_out_button, 5, 1, 1, 1)
+        self.gridLayout.addWidget(self.set_max_roll_out_button, 4, 1, 1, 1)
 
         # light intensity
         # labels
@@ -112,17 +112,22 @@ class Ui_SubWindow(object):
         self.label_functions = QtWidgets.QLabel(self.centralwidget)
         self.label_functions.setAlignment(QtCore.Qt.AlignCenter)
         self.label_functions.setObjectName("label_functions")
-        self.gridLayout.addWidget(self.label_functions, 2, 11, 1, 1)
+        self.gridLayout.addWidget(self.label_functions, 2, 11, 1, 2)
+        # free_button
+        self.free_button = QtWidgets.QPushButton(self.centralwidget)
+        self.free_button.setObjectName("free_button")
+        self.free_button.clicked.connect(lambda x: units.Units.set_free_unit(self.unit))
+        self.gridLayout.addWidget(self.free_button, 3, 11, 2, 1)
         # up_button
         self.up_button = QtWidgets.QPushButton(self.centralwidget)
         self.up_button.setObjectName("up_button")
         self.up_button.clicked.connect(lambda x: units.Units.roll_in_unit(self.unit))
-        self.gridLayout.addWidget(self.up_button, 3, 11, 1, 1)
+        self.gridLayout.addWidget(self.up_button, 3, 12, 1, 1)
         # down_button
         self.down_button = QtWidgets.QPushButton(self.centralwidget)
         self.down_button.setObjectName("down_button")
         self.down_button.clicked.connect(lambda x: units.Units.roll_out_unit(self.unit))
-        self.gridLayout.addWidget(self.down_button, 5, 11, 1, 1)
+        self.gridLayout.addWidget(self.down_button, 4, 12, 1, 1)
 
         # lines
         self.line = QtWidgets.QFrame(self.centralwidget)
@@ -172,7 +177,7 @@ class Ui_SubWindow(object):
         self.gridLayout_3 = QtWidgets.QGridLayout(self.Status)
         self.gridLayout_3.setObjectName("gridLayout_3")
         self.tabWidget.addTab(self.Status, "")
-        self.gridLayout.addWidget(self.tabWidget, 1, 0, 1, 12)
+        self.gridLayout.addWidget(self.tabWidget, 1, 0, 1, 13)
 
         # the graph op Data tab
         self.pen = QtGui.QPen()
@@ -201,7 +206,7 @@ class Ui_SubWindow(object):
 
         #self.update_graph()
         labelStyle = {'color': '#FFF', 'font-size': '10pt'}
-        self.graph.setLabel('left', 'Temperature/Light intensity', **labelStyle)
+        self.graph.setLabel('left', 'Datavalue', **labelStyle)
         self.graph.setLabel('bottom', 'Datapoint', **labelStyle)
         self.gridLayout_2.addWidget(self.graph, 0, 0, 1, 1)
 
@@ -327,7 +332,7 @@ class Ui_SubWindow(object):
         self.sunBlindName.setFont(font)
         self.sunBlindName.setAlignment(QtCore.Qt.AlignBottom | QtCore.Qt.AlignHCenter)
         self.sunBlindName.setObjectName("sunblindName")
-        self.gridLayout.addWidget(self.sunBlindName, 0, 1, 1, 12)
+        self.gridLayout.addWidget(self.sunBlindName, 0, 1, 1, 13)
 
         SubWindow.setCentralWidget(self.centralwidget)
         self.retranslateUi(SubWindow)
@@ -336,9 +341,10 @@ class Ui_SubWindow(object):
 
     def retranslateUi(self, SubWindow):
         _translate = QtCore.QCoreApplication.translate
-        SubWindow.setWindowTitle(_translate("SubWindow", "unit" + str(self.unit)))
+        SubWindow.setWindowTitle(_translate("SubWindow", self.unit))
         self.label_functions.setText(_translate("SubWindow", "Functions"))
         self.label_roll_out.setText(_translate("SubWindow", "Set sun blind roll out "))
+        self.free_button.setText(_translate("SubWindow", "FREE"))
         self.up_button.setText(_translate("SubWindow", "UP"))
         self.down_button.setText(_translate("SubWindow", "DOWN"))
         self.set_max_roll_out_button.setText(_translate("SubWindow", "Set max"))
@@ -349,7 +355,7 @@ class Ui_SubWindow(object):
         self.set_temperature_button.setText(_translate("SubWindow", "Set Temperature"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.Data), _translate("SubWindow", "Data"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.Status), _translate("SubWindow", "Status"))
-        self.sunBlindName.setText(_translate("SubWindow", "Unit " + str(self.unit)))
+        self.sunBlindName.setText(_translate("SubWindow", self.unit))
         item = self.tableWidget.verticalHeaderItem(0)
         item.setText(_translate("SubWindow", "light sensor"))
         item = self.tableWidget.verticalHeaderItem(1)
