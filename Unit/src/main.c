@@ -42,7 +42,7 @@ void setup(void) {
 
 void init_SCH(void)
 {
-	SCH_Init_T1();
+	SCH_Init_T0();
 
 	SCH_Add_Task(&updateSensorData_task, 0, UPDATESENSORDATA_TASK_PERIOD);
 	SCH_Add_Task(&temperature_task, 0, TEMPERATURE_TASK_PERIOD);

@@ -16,7 +16,7 @@ typedef struct
 // Function prototypes
 //-------------------------------------------------------------------
 
-void SCH_Init_T1(void);
+void SCH_Init_T0(void);
 void SCH_Start(void);
 // Core scheduler functions
 void SCH_Dispatch_Tasks(void);

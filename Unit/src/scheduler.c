@@ -149,7 +149,7 @@ You must call this function before using the scheduler.
 
 -*------------------------------------------------------------------*/
 
-void SCH_Init_T1(void)
+void SCH_Init_T0(void)
 {
 	unsigned char i;
 
