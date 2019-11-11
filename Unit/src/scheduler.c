@@ -149,7 +149,7 @@ You must call this function before using the scheduler.
 
 -*------------------------------------------------------------------*/
 
-void SCH_Init_T1(void)
+void SCH_Init_T0(void)
 {
 	unsigned char i;
 
@@ -158,15 +158,18 @@ void SCH_Init_T1(void)
 		SCH_Delete_Task(i);
 	}
 
-	// Set up Timer 1
-	// Values for 1ms and 10ms ticks are provided for various crystals
-
-	// this is where you can change the periods
-	// for reference on timer modes go to: page 136 of the atmega328p datasheet
-	OCR1A = (uint16_t)625;					// 10ms = (256/16.000.000) * 625
-	TCCR1B = (1 << CS12) | (1 << WGM12);	// CS12:CS10 = 0b100 means prescaler is 256
-											// WGM13:WGM10 = 0b0100 means CTC (clear timer on compare) mode
-	TIMSK1 = 1 << OCIE1A;					// Timer 1 Output Compare A Match Interrupt Enable
+	/* Set up timer/counter 0]
+	*
+	* see atmega328p datasheet section 14: 8-bit Timer/Counter0 with PWM
+	* specifically for TCCR0A and TCCR0B see sections 14.9.1 and 14.9.2
+	* 10.048ms = (1024/16.000.000) * 157
+	* CS02:CS00 = 0b101 means prescaler is 1024
+	* WGM02:WGM00 = 0b100 means CTC (clear timer on compare) mode
+	*/
+	OCR0A = (uint8_t)157;
+	TCCR0A = (1 << WGM01);
+	TCCR0B = (1 << CS02) | (1 << CS00);
+	TIMSK0 = (1 << OCIE0A); // Timer 1 Output Compare A Match Interrupt Enable
 }
 
 /*------------------------------------------------------------------*-
@@ -199,7 +202,7 @@ determined by the timer settings in SCH_Init_T1().
 
 -*------------------------------------------------------------------*/
 
-ISR(TIMER1_COMPA_vect)
+ISR(TIMER0_COMPA_vect)
 {
 	unsigned char Index;
 	for(Index = 0; Index < SCH_MAX_TASKS; Index++)

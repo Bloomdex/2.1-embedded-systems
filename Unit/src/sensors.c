@@ -1,5 +1,6 @@
 #include "sensors.h"
 #include "portManipulator.h"
+#include "ultrasonic.h"
 
 
 float getTemperature() {
@@ -30,4 +31,12 @@ float getLightIntensity() {
 	float lightIntensity = (float)lightSensorInput / 10;	// Divide intensity value by 10 to stay inside 127 range of int8
 	
 	return lightIntensity;
+}
+
+float getDistance(void)
+{
+	float distance = measure_distance();
+	
+	// if distance is -1 return invalid, else return distance
+	return distance >= 0 ? distance : INVALID_READING_VALUE;
 }

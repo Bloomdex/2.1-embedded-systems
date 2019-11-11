@@ -58,6 +58,8 @@ class SunBlindModel:
     def set_min_roll_out(self, min_roll_out):
         if min_roll_out < self.max_roll_out:
             self.min_roll_out = round(min_roll_out, 2)
+            self.module.send_data(0xF4)
+            self.module.send_data(int(self.min_roll_out * 100))
             setupwindows.MakeWindows.update_min_inputs()
         else:
             setupwindows.MakeWindows.make_min_error()
@@ -65,6 +67,8 @@ class SunBlindModel:
     def set_max_roll_out(self, max_roll_out):
         if max_roll_out > self.min_roll_out:
             self.max_roll_out = round(max_roll_out, 2)
+            self.module.send_data(0xF5)
+            self.module.send_data(int(self.max_roll_out * 100))
             setupwindows.MakeWindows.update_max_inputs()
         else:
             setupwindows.MakeWindows.make_max_error()
@@ -77,10 +81,14 @@ class SunBlindModel:
 
     def set_light_intensity(self, value):
         self.light_intensity = value
+        self.module.send_data(0xF7)
+        self.module.send_data(value)
         setupwindows.MakeWindows.update_light_intensity_inputs()
 
     def set_temp(self, value):
         self.temperature = value
+        self.module.send_data(0xF8)
+        self.module.send_data(value)
         setupwindows.MakeWindows.update_temp_inputs()
 
     def get_light_intensity(self):
@@ -107,16 +115,10 @@ class SunBlindModel:
         self.status_sun_blind = status
 
     def roll_out(self):
-        if not self.free:
-            self.status_sun_blind = "open"
-            # call serial with unit and give self.max_roll_out as param
-        pass
+        self.module.send_data(0xFB)
 
     def roll_in(self):
-        if not self.free:
-            self.status_sun_blind = "closed"
-            # call serial with unit and give self.min_roll_out as param
-        pass
+        self.module.send_data(0xFC)
 
     def get_data_x(self):
         return self.data_x
@@ -153,15 +155,13 @@ class SunBlindModel:
             # Sends instructions to module to return temperature and light
             self.module.send_data(0xFD)  # Light
             self.module.send_data(0xFE)  # Temperature
+            self.module.send_data(0xF6)  # Ultrasoon
+            self.module.send_data(0xF9)  # Status
         except SerialException:
             self.module.close_connection()
 
     def set_free(self):
         self.module.send_data(0xFA)
-        if self.free:
-            self.free = False
-        else:
-            self.free = True
 
     def add_new_data(self, data):
         if 'Temperature' in data:
@@ -175,11 +175,13 @@ class SunBlindModel:
                 if len(self.data_light) > 100:
                     self.data_light.pop(0)
         if 'Ultrasoon' in data:
-            for ultrasoon in data['ultrasoon']:
+            for ultrasoon in data['Ultrasoon']:
                 self.data_ultrasoon.append(ultrasoon)
                 if len(self.data_ultrasoon) > 100:
                     self.data_ultrasoon.pop(0)
         if 'Status' in data:
+            if 'SunBlindForced' in data['Status']:
+                self.free = not data['Status']['SunBlindForced']
             if 'SunBlind' in data['Status']:
                 self.status_sun_blind = data['Status']['SunBlind']
             if 'Temperature' in data['Status']:

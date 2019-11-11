@@ -1,6 +1,8 @@
 data_types = {
     0xFD: 'Light',
-    0xFE: 'Temperature'
+    0xFE: 'Temperature',
+    0xF9: 'Status',
+    0xF6: 'Ultrasoon'
 }
 
 
@@ -20,7 +22,7 @@ class DataReader:
                 sequence_started = True
 
             if sequence_started:
-                if data[i] is 0x00 and data[i - 1] is current_data_type and data[i - 2] is 0x00:
+                if data[i] is 0x0A and data[i - 1] is current_data_type and data[i - 2] is 0x00:
                     sequence_started = False
                     sequence_stop_index = i - 2
 

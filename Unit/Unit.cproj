@@ -138,7 +138,13 @@
     <Folder Include="src\Header Files" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="src\dataHandler.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\eeprom.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\Header Files\dataHandler.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\Header Files\eeprom.h">
