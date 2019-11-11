@@ -118,11 +118,11 @@ void handleInstructions(void) {
                 setUserLightPreference(received_data[value_index]);
                 received_data[value_index] = 0;
                 break;
-            case CODE_MINIMAL_SHUTTER:
+            case CODE_PREFERRED_MIN_SHUTTER:
                 setUserShutterMinPreference(received_data[value_index]);
                 received_data[value_index] = 0;
                 break;
-            case CODE_MAXIMAL_SHUTTER:
+            case CODE_PREFERRED_MAX_SHUTTER:
                 setUserShutterMaxPreference(received_data[value_index]);
                 received_data[value_index] = 0;
                 break;
