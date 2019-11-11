@@ -94,9 +94,7 @@ float measure_distance(void)
 		}
 	}
 	// echo pulse is finished
-
-	uint32_t total_cycles = overflows * UINT16_MAX + TCNT1;
-	float cm = total_cycles / CYCLES_TO_CM_DIVIDER;
+	float cm = total_cycles() / CYCLES_TO_CM_DIVIDER;
 
 	cleanup();
 	// return decimeters so it fits within int8_t which is used as the 

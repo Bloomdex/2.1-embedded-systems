@@ -66,7 +66,7 @@ void updateSensorData_task(void) {
 void distance_task(void)
 {
 	int8_t distanceReading = (int8_t)getDistance();
-	currentDistanceReading = getDistanceMod();
+	currentDistanceReading = distanceReading;
 
 	if (distanceReading != INVALID_READING_VALUE)
 		addDistanceToBuffer(distanceReading);
@@ -101,7 +101,7 @@ void ledKeyUnitButtonReading_task(void)
 
 void rollerShutter_task(void)
 {
-	rollerShutterUpdate(getTemperatureMod(), getLightIntensityMod(), getUserTempPreference(), getUserLightPreference());
+	rollerShutterUpdate(getTemperatureMod(), getLightIntensityMod(), getUserTempPreference(), getUserLightPreference(), currentDistanceReading);
 }
 
 int main(void)

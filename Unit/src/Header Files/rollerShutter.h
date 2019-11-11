@@ -11,6 +11,6 @@ void setShutterFreed();
 uint8_t getShutterForcedState();
 uint8_t getRollerShutterState();
 
-void rollerShutterUpdate(int8_t temperature, int8_t lightIntensity, int8_t prefferedTemperature, int8_t prefferedLightIntensity);
+void rollerShutterUpdate(int8_t temperature, int8_t lightIntensity, int8_t prefferedTemperature, int8_t prefferedLightIntensity, int8_t distanceMeasurement);
 
 #endif /* ROLLERSHUTTER_H_ */
