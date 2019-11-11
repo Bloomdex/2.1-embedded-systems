@@ -77,7 +77,7 @@ void temperature_task(void)
 	currentTemperatureReading = getTemperatureMod();
 
 	if(temperatureReading != INVALID_READING_VALUE)
-		addTemperatureToBuffer(temperatureReading);
+		addTemperatureToBuffer(currentTemperatureReading);
 }
 
 void light_task(void)
@@ -86,7 +86,7 @@ void light_task(void)
 	currentLightReading = getLightIntensityMod();
 
 	if(lightReading != INVALID_READING_VALUE)
-		addLightToBuffer(lightReading);
+		addLightToBuffer(currentLightReading);
 }
 
 void ledKeyUnit_task(void)
