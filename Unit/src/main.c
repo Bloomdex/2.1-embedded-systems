@@ -24,6 +24,7 @@
 #define LEDKEYUNITBUTTONREADING_TASK_PERIOD 4
 #define ROLLERSHUTTER_TASK_PERIOD 70
 #define HANDLEINSTRUCTIONS_PERIOD 5
+#define DISTANCE_TASK_PERIOD 3000 // every 30 seconds
 
 
 void setup(void) {
@@ -51,6 +52,7 @@ void init_SCH(void)
 	SCH_Add_Task(&ledKeyUnitButtonReading_task, 0, LEDKEYUNITBUTTONREADING_TASK_PERIOD);
 	SCH_Add_Task(&rollerShutter_task, 0, ROLLERSHUTTER_TASK_PERIOD);
 	SCH_Add_Task(&handleInstructions, 0, HANDLEINSTRUCTIONS_PERIOD);
+	SCH_Add_Task(&distance_task, 0, DISTANCE_TASK_PERIOD);
 }
 
 void updateSensorData_task(void) {
@@ -61,6 +63,14 @@ void updateSensorData_task(void) {
 	updateSensorData(temperatureReading, lightReading, distanceReading);
 }
 
+void distance_task(void)
+{
+	int8_t distanceReading = (int8_t)getDistance();
+	currentDistanceReading = getDistanceMod();
+
+	if (distanceReading != INVALID_READING_VALUE)
+		addDistanceToBuffer(distanceReading);
+}
 void temperature_task(void)
 {
 	int8_t temperatureReading = (int8_t)getTemperature();

@@ -25,6 +25,6 @@ unsigned char SCH_Delete_Task(const unsigned char);
 
 // Maximum number of tasks
 // change this if you need more
-#define SCH_MAX_TASKS (7)
+#define SCH_MAX_TASKS (8)
 
 #endif
