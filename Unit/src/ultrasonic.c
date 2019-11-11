@@ -1,9 +1,5 @@
 #include "ultrasonic.h"
 
-volatile uint8_t overflows = 0;
-
-
-
 static void start_timer(void)
 {
 	TCCR1B |= PRESCALER_VALUE;
@@ -28,7 +24,7 @@ static void cleanup(void)
 
 static uint32_t total_cycles(void)
 {
-	return overflows * UINT16_MAX + TCNT1;
+	return TCNT1 * 8;
 }
 
 /* init_ultrasonic
@@ -50,7 +46,6 @@ void init_ultrasonic(void)
 	TCCR1B = 0;
 	TCCR1C = 0;
 	TIMSK1 = 0;
-	TIMSK1 |= TIMER1_OVF_INT;
 	cleanup();
 }
 
@@ -100,9 +95,4 @@ float measure_distance(void)
 	// return decimeters so it fits within int8_t which is used as the 
 	// standard data transfer type
 	return cm;
-}
-
-ISR(TIMER1_OVF_vect)
-{
-	overflows++;
 }

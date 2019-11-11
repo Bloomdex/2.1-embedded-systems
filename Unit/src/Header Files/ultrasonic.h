@@ -15,7 +15,7 @@
 #define COUNTER_MULTIPLIER 8
 #define CYCLES_TO_CM_DIVIDER (58 * 16)
 
-#define PRESCALER_VALUE _BV(CS10)	// CS10 -> no prescaler, run on F_CPU
+#define PRESCALER_VALUE _BV(CS11)	// CS11 -> 8 prescaler
 #define TIMER1_OVF_INT _BV(TOIE1)
 
 #define MIN_DISTANCE_VALUE 35
