@@ -14,6 +14,7 @@ extern int8_t currentLightReading;
 // Instruction Codes - Sensor data
 #define CODE_TEMPERATURE 0xFE
 #define CODE_LIGHT 0xFD
+#define CODE_DISTANCE 0xF6
 
 //Instruction Codes - RollerShutter
 #define CODE_ROLLERSHUTTER_FORCE_CLOSE 0xFC
@@ -30,6 +31,7 @@ extern int8_t currentLightReading;
 // Storage size of measurement buffers
 #define TEMPERATURE_STORAGE_SIZE 255
 #define LIGHT_STORAGE_SIZE 255
+#define DISTANCE_STORAGE_SIZE 255
 
 void addTemperatureToBuffer(int8_t value);
 void addLightToBuffer(int8_t value);

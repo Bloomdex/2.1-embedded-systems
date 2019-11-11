@@ -8,9 +8,11 @@ int8_t temperature_pool[TEMPERATURE_POOL_STORAGE_SIZE];
 uint8_t temperature_pool_head_index = 0;
 int8_t lightIntensity_pool[LIGHTINTENSITY_POOL_STORAGE_SIZE];
 uint8_t lightIntensity_pool_head_index = 0;
+int8_t distance_pool[DISTANCE_POOL_STORAGE_SIZE];
+uint8_t distance_pool_head_index = 0;
 
 
-void updateSensorData(int8_t currentTemperature, int8_t currentLightIntensity) {
+void updateSensorData(int8_t currentTemperature, int8_t currentLightIntensity, int8_t currentDistance) {
 	if(currentTemperature != INVALID_READING_VALUE) {
 		// Update our temperature pool
 		temperature_pool[temperature_pool_head_index] = currentTemperature;
@@ -36,6 +38,19 @@ void updateSensorData(int8_t currentTemperature, int8_t currentLightIntensity) {
 
 		lightIntensity_pool_head_index = 0;
 	}
+
+	if (currentDistance != INVALID_READING_VALUE)
+	{
+		distance_pool[distance_pool_head_index] = currentDistance;
+		distance_pool_head_index = (distance_pool_head_index + 1) % DISTANCE_POOL_STORAGE_SIZE;
+	}
+	else
+	{
+		for (uint8_t i = 0; i < DISTANCE_POOL_STORAGE_SIZE; i++)
+			distance_pool[i] = INVALID_READING_VALUE;
+		
+		distance_pool_head_index = 0;
+	}
 }
 
 int8_t getTemperatureMod() {
@@ -44,6 +59,11 @@ int8_t getTemperatureMod() {
 
 int8_t getLightIntensityMod() {
 	return getMode(lightIntensity_pool, LIGHTINTENSITY_POOL_STORAGE_SIZE);
+}
+
+int8_t getDistanceMod()
+{
+	return getMode(distance_pool, LIGHTINTENSITY_POOL_STORAGE_SIZE);
 }
 
 int8_t getMode(int8_t array[], uint8_t size) {

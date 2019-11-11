@@ -5,9 +5,9 @@
 
 #define TEMPERATURE_POOL_STORAGE_SIZE 20
 #define LIGHTINTENSITY_POOL_STORAGE_SIZE 20
+#define DISTANCE_POOL_STORAGE_SIZE 20
 
-void updateSensorData(int8_t currentTemperature, int8_t currentLightIntensity);
-
+void updateSensorData(int8_t currentTemperature, int8_t currentLightIntensity, int8_t currentDistance);
 int8_t getTemperatureMod();
 int8_t getLightIntensityMod();
 

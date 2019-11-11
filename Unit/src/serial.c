@@ -23,6 +23,9 @@ uint8_t temperature_head_index = 0;
 int8_t lights[LIGHT_STORAGE_SIZE];
 uint8_t lights_head_index = 0;
 
+int8_t distances[DISTANCE_STORAGE_SIZE];
+uint8_t distances_head_index = 0;
+
 //Adds the given temperature value to the temperature buffer.
 void addTemperatureToBuffer(int8_t value) {
     temperatures[temperature_head_index] = value;
@@ -33,6 +36,12 @@ void addTemperatureToBuffer(int8_t value) {
 void addLightToBuffer(int8_t value) {
     lights[lights_head_index] = value;
     lights_head_index = (lights_head_index + 1) % LIGHT_STORAGE_SIZE;
+}
+
+void addDistanceToBuffer(int8_t value)
+{
+    distances[distances_head_index] = value;
+    distances_head_index = (distances_head_index + 1) % DISTANCE_STORAGE_SIZE;
 }
 
 // Transmits data that has been collected in the buffer. (this will not reset the buffer)
@@ -83,6 +92,10 @@ void handleInstructions(void) {
                 memset(lights, 0, LIGHT_STORAGE_SIZE);
                 lights_head_index = 0;
                 break;
+            case CODE_DISTANCE:
+                transmitBufferData(CODE_DISTANCE, distances, DISTANCE_STORAGE_SIZE, distances_head_index);
+                memset(distances, 0, DISTANCE_STORAGE_SIZE);
+                distances_head_index = 0;
             case CODE_ROLLERSHUTTER_FORCE_CLOSE:
                 setShutterForceClosed();
                 break;

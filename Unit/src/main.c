@@ -15,6 +15,7 @@
 #include "ledKeyUnit.h"
 #include "userPreferenceHandler.h"
 #include "dataHandler.h"
+#include "ultrasonic.h"
 
 #define UPDATESENSORDATA_TASK_PERIOD 3
 #define TEMPERATURE_TASK_PERIOD 100
@@ -34,6 +35,7 @@ void setup(void) {
 	initLedKeyUnit();
 	initUserPreferenceHandler();
 	init_SCH();
+	init_ultrasonic();
 
 	_delay_ms(1000);
 }
@@ -54,6 +56,7 @@ void init_SCH(void)
 void updateSensorData_task(void) {
 	int8_t temperatureReading = (int8_t)getTemperature();
 	int8_t lightReading = (int8_t)getLightIntensity();
+	int8_t distsnceReading = (int8_t)getDistance();
 	
 	updateSensorData(temperatureReading, lightReading);
 }
