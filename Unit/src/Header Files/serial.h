@@ -28,8 +28,8 @@ extern int8_t currentDistanceReading;
 //Instruction Codes - Set Preferred Settings
 #define CODE_PREFERRED_TEMPERATURE 0xF8
 #define CODE_PREFERRED_LIGHT 0xF7
-#define CODE_PREFERRED_MAX_SHUTTER 0xF3
-#define CODE_PREFERRED_MIN_SHUTTER 0xF2
+#define CODE_PREFERRED_MAX_SHUTTER 0xF5
+#define CODE_PREFERRED_MIN_SHUTTER 0xF4
 
 // Storage size of measurement buffers
 #define TEMPERATURE_STORAGE_SIZE 255

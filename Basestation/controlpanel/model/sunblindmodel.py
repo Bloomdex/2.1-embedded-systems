@@ -57,6 +57,8 @@ class SunBlindModel:
     def set_min_roll_out(self, min_roll_out):
         if min_roll_out < self.max_roll_out:
             self.min_roll_out = round(min_roll_out, 2)
+            self.module.send_data(0xF4)
+            self.module.send_data(int(self.min_roll_out * 100))
             setupwindows.MakeWindows.update_min_inputs()
         else:
             setupwindows.MakeWindows.make_min_error()
@@ -64,6 +66,8 @@ class SunBlindModel:
     def set_max_roll_out(self, max_roll_out):
         if max_roll_out > self.min_roll_out:
             self.max_roll_out = round(max_roll_out, 2)
+            self.module.send_data(0xF5)
+            self.module.send_data(int(self.max_roll_out * 100))
             setupwindows.MakeWindows.update_max_inputs()
         else:
             setupwindows.MakeWindows.make_max_error()

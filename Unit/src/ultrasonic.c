@@ -13,7 +13,6 @@ static void stop_timer(void)
 static void reset_timer(void)
 {
 	TCNT1 = 0;
-	overflows = 0;
 }
 
 static void cleanup(void)
