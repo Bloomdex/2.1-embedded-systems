@@ -29,6 +29,10 @@ extern int8_t currentDistanceReading;
 #define CODE_PREFERRED_TEMPERATURE 0xF8
 #define CODE_PREFERRED_LIGHT 0xF7
 
+//Instruction Codes - Set Minimal & Maximal shutter length.
+#define CODE_MINIMAL_SHUTTER 0xF5
+#define CODE_MAXIMAL_SHUTTER 0xF4
+
 // Storage size of measurement buffers
 #define TEMPERATURE_STORAGE_SIZE 255
 #define LIGHT_STORAGE_SIZE 255
