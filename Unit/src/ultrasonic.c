@@ -2,28 +2,7 @@
 
 volatile uint8_t overflows = 0;
 
-/* init_ultrasonic
- * Prepare ports and timer settings for measuring distance with the ultrasonic
- * sensor.
-*/
-void init_ultrasonic(void)
-{
-	// setup ports
-	DDRD |= TRIG_PORT;
-	DDRD &= ~ECHO_PORT;
 
-	// pull-down
-	PORTD &= ~TRIG_PORT;
-	_delay_us(2);
-
-	// init timer
-	TCCR1A = 0;
-	TCCR1B = 0;
-	TCCR1C = 0;
-	TIMSK1 = 0;
-	TIMSK1 |= TIMER1_OVF_INT;
-	cleanup();
-}
 
 static void start_timer(void)
 {
@@ -52,6 +31,29 @@ static uint32_t total_cycles(void)
 	return overflows * UINT16_MAX + TCNT1;
 }
 
+/* init_ultrasonic
+ * Prepare ports and timer settings for measuring distance with the ultrasonic
+ * sensor.
+*/
+void init_ultrasonic(void)
+{
+	// setup ports
+	DDRD |= TRIG_PORT;
+	DDRD &= ~ECHO_PORT;
+
+	// pull-down
+	PORTD &= ~TRIG_PORT;
+	_delay_us(2);
+
+	// init timer
+	TCCR1A = 0;
+	TCCR1B = 0;
+	TCCR1C = 0;
+	TIMSK1 = 0;
+	TIMSK1 |= TIMER1_OVF_INT;
+	cleanup();
+}
+
 /* measure_distance
  * this is a synchronous, blocking version that measures distance with the
  * ultrasonic sensor.
@@ -60,8 +62,7 @@ static uint32_t total_cycles(void)
 */
 float measure_distance(void)
 {
-	init();
-
+	cleanup();
 	// send 10µs pulse to TRIG_PORT
 	PORTD |= TRIG_PORT;
 	_delay_us(10);
