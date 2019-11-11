@@ -166,7 +166,7 @@ void SCH_Init_T1(void)
 	* CS02:CS00 = 0b101 means prescaler is 1024
 	* WGM02:WGM00 = 0b100 means CTC (clear timer on compare) mode
 	*/
-	OCR0A = (uint8_t)625;
+	OCR0A = (uint8_t)157;
 	TCCR0A = (1 << WGM01);
 	TCCR0B = (1 << CS02) | (1 << CS00);
 	TIMSK0 = (1 << OCIE0A); // Timer 1 Output Compare A Match Interrupt Enable
