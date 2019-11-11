@@ -18,7 +18,7 @@ class SunBlindModel:
         self.module = module
         self.light_intensity = 75
         self.temperature = 25
-        self.free = False
+        self.force = False
 
     @staticmethod
     def get_mode(data):
@@ -181,7 +181,7 @@ class SunBlindModel:
                     self.data_ultrasoon.pop(0)
         if 'Status' in data:
             if 'SunBlindForced' in data['Status']:
-                self.free = not data['Status']['SunBlindForced']
+                self.force = data['Status']['SunBlindForced']
             if 'SunBlind' in data['Status']:
                 self.status_sun_blind = data['Status']['SunBlind']
             if 'Temperature' in data['Status']:
