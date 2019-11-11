@@ -140,7 +140,7 @@ class Thread(QThread):
                 if close_connection:
                     remove_from_dict.append(arduino)
             for arduino in remove_from_dict:
-                print(arduino)
+                print("Removed", arduino, "from Unit list")
                 del units.Units.units[arduino]
                 del serialcontrol.detector.arduinos[arduino]
             for x in range(0, 10):
