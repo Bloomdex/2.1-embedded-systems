@@ -15,6 +15,7 @@
 #include "ledKeyUnit.h"
 #include "userPreferenceHandler.h"
 #include "dataHandler.h"
+#include "ultrasonic.h"
 
 #define UPDATESENSORDATA_TASK_PERIOD 3
 #define TEMPERATURE_TASK_PERIOD 100
@@ -23,6 +24,7 @@
 #define LEDKEYUNITBUTTONREADING_TASK_PERIOD 4
 #define ROLLERSHUTTER_TASK_PERIOD 70
 #define HANDLEINSTRUCTIONS_PERIOD 5
+#define DISTANCE_TASK_PERIOD 3000 // every 30 seconds
 
 
 void setup(void) {
@@ -34,13 +36,14 @@ void setup(void) {
 	initLedKeyUnit();
 	initUserPreferenceHandler();
 	init_SCH();
+	init_ultrasonic();
 
 	_delay_ms(1000);
 }
 
 void init_SCH(void)
 {
-	SCH_Init_T1();
+	SCH_Init_T0();
 
 	SCH_Add_Task(&updateSensorData_task, 0, UPDATESENSORDATA_TASK_PERIOD);
 	SCH_Add_Task(&temperature_task, 0, TEMPERATURE_TASK_PERIOD);
@@ -49,15 +52,25 @@ void init_SCH(void)
 	SCH_Add_Task(&ledKeyUnitButtonReading_task, 0, LEDKEYUNITBUTTONREADING_TASK_PERIOD);
 	SCH_Add_Task(&rollerShutter_task, 0, ROLLERSHUTTER_TASK_PERIOD);
 	SCH_Add_Task(&handleInstructions, 0, HANDLEINSTRUCTIONS_PERIOD);
+	SCH_Add_Task(&distance_task, 0, DISTANCE_TASK_PERIOD);
 }
 
 void updateSensorData_task(void) {
 	int8_t temperatureReading = (int8_t)getTemperature();
 	int8_t lightReading = (int8_t)getLightIntensity();
+	int8_t distanceReading = (int8_t)getDistance();
 	
-	updateSensorData(temperatureReading, lightReading);
+	updateSensorData(temperatureReading, lightReading, distanceReading);
 }
 
+void distance_task(void)
+{
+	int8_t distanceReading = (int8_t)getDistance();
+	currentDistanceReading = distanceReading;
+
+	if (distanceReading != INVALID_READING_VALUE)
+		addDistanceToBuffer(distanceReading);
+}
 void temperature_task(void)
 {
 	int8_t temperatureReading = (int8_t)getTemperature();
@@ -88,7 +101,7 @@ void ledKeyUnitButtonReading_task(void)
 
 void rollerShutter_task(void)
 {
-	rollerShutterUpdate(getTemperatureMod(), getLightIntensityMod(), getUserTempPreference(), getUserLightPreference());
+	rollerShutterUpdate(getTemperatureMod(), getLightIntensityMod(), getUserTempPreference(), getUserLightPreference(), currentDistanceReading);
 }
 
 int main(void)

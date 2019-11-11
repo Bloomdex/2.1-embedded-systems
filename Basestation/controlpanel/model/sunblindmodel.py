@@ -57,6 +57,8 @@ class SunBlindModel:
     def set_min_roll_out(self, min_roll_out):
         if min_roll_out < self.max_roll_out:
             self.min_roll_out = round(min_roll_out, 2)
+            self.module.send_data(0xF4)
+            self.module.send_data(int(self.min_roll_out * 100))
             setupwindows.MakeWindows.update_min_inputs()
         else:
             setupwindows.MakeWindows.make_min_error()
@@ -64,6 +66,8 @@ class SunBlindModel:
     def set_max_roll_out(self, max_roll_out):
         if max_roll_out > self.min_roll_out:
             self.max_roll_out = round(max_roll_out, 2)
+            self.module.send_data(0xF5)
+            self.module.send_data(int(self.max_roll_out * 100))
             setupwindows.MakeWindows.update_max_inputs()
         else:
             setupwindows.MakeWindows.make_max_error()
@@ -156,6 +160,7 @@ class SunBlindModel:
             # Sends instructions to module to return temperature and light
             self.module.send_data(0xFD)  # Light
             self.module.send_data(0xFE)  # Temperature
+            self.module.send_data(0xF6)  # Ultrasoon
             self.module.send_data(0xF9)  # Status
         except SerialException:
             self.module.close_connection()
@@ -172,7 +177,7 @@ class SunBlindModel:
                 if len(self.data_light) > 100:
                     self.data_light.pop(0)
         if 'Ultrasoon' in data:
-            for ultrasoon in data['ultrasoon']:
+            for ultrasoon in data['Ultrasoon']:
                 self.data_ultrasoon.append(ultrasoon)
                 if len(self.data_ultrasoon) > 100:
                     self.data_ultrasoon.pop(0)
