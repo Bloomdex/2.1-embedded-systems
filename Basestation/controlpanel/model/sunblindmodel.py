@@ -156,6 +156,7 @@ class SunBlindModel:
             # Sends instructions to module to return temperature and light
             self.module.send_data(0xFD)  # Light
             self.module.send_data(0xFE)  # Temperature
+            self.module.send_data(0xF6)  # Ultrasoon
             self.module.send_data(0xF9)  # Status
         except SerialException:
             self.module.close_connection()
@@ -172,7 +173,7 @@ class SunBlindModel:
                 if len(self.data_light) > 100:
                     self.data_light.pop(0)
         if 'Ultrasoon' in data:
-            for ultrasoon in data['ultrasoon']:
+            for ultrasoon in data['Ultrasoon']:
                 self.data_ultrasoon.append(ultrasoon)
                 if len(self.data_ultrasoon) > 100:
                     self.data_ultrasoon.pop(0)

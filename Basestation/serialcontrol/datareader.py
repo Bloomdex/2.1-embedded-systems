@@ -1,7 +1,8 @@
 data_types = {
     0xFD: 'Light',
     0xFE: 'Temperature',
-    0xF9: 'Status'
+    0xF9: 'Status',
+    0xF6: 'Ultrasoon'
 }
 
 

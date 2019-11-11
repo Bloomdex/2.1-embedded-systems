@@ -88,6 +88,7 @@ class Module:
             decoded_signal['Status'].setdefault('SunBlind', roller_shutter_states[status_signal[1]])
             decoded_signal['Status'].setdefault('Temperature', sensor_states[status_signal[2]])
             decoded_signal['Status'].setdefault('Light', sensor_states[status_signal[3]])
+            decoded_signal['Status'].setdefault('Ultrasoon', sensor_states[status_signal[4]])
 
         self.data.clear()
         return decoded_signal
