@@ -119,11 +119,11 @@ void handleInstructions(void) {
                 received_data[value_index] = 0;
                 break;
             case CODE_MINIMAL_SHUTTER:
-                //TODO: functieVoorZettenMinimumShWaardeHier(received_data[value_index]);
+                setUserShutterMinPreference(received_data[value_index]);
                 received_data[value_index] = 0;
                 break;
             case CODE_MAXIMAL_SHUTTER:
-                //TODO: functieVoorZettenMaximumShutterWaardeHier(received_data[value_index]);
+                setUserShutterMaxPreference(received_data[value_index]);
                 received_data[value_index] = 0;
                 break;
         }
