@@ -18,6 +18,9 @@
 #define PRESCALER_VALUE _BV(CS10)	// CS10 -> no prescaler, run on F_CPU
 #define TIMER1_OVF_INT _BV(TOIE1)
 
+#define MIN_DISTANCE_VALUE 35
+#define MAX_DISTANCE_VALUE 70
+
 void init_ultrasonic(void);
 float measure_distance(void);
 
