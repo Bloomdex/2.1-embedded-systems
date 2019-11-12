@@ -115,10 +115,10 @@ class SunBlindModel:
         self.status_sun_blind = status
 
     def roll_out(self):
-        self.module.send_data(0xFB)
+        self.module.send_data(0xFC)
 
     def roll_in(self):
-        self.module.send_data(0xFC)
+        self.module.send_data(0xFB)
 
     def get_data_x(self):
         return self.data_x

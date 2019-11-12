@@ -24,7 +24,9 @@
 #define LEDKEYUNITBUTTONREADING_TASK_PERIOD 4
 #define ROLLERSHUTTER_TASK_PERIOD 70
 #define HANDLEINSTRUCTIONS_PERIOD 5
-#define DISTANCE_TASK_PERIOD 3000 // every 30 seconds
+#define DISTANCE_TASK_PERIOD 500 // every 5 seconds
+
+uint8_t latest_distance;
 
 
 void setup(void) {
@@ -65,11 +67,14 @@ void updateSensorData_task(void) {
 
 void distance_task(void)
 {
-	int8_t distanceReading = (int8_t)getDistance();
-	currentDistanceReading = distanceReading;
+	uint8_t distanceReading = getDistance();
 
-	if (distanceReading != INVALID_READING_VALUE)
+	if (distanceReading != 0)
+	{
+		latest_distance = distanceReading;
 		addDistanceToBuffer(distanceReading);
+	}
+		
 }
 void temperature_task(void)
 {
@@ -101,7 +106,7 @@ void ledKeyUnitButtonReading_task(void)
 
 void rollerShutter_task(void)
 {
-	rollerShutterUpdate(getTemperatureMod(), getLightIntensityMod(), getUserTempPreference(), getUserLightPreference(), currentDistanceReading);
+	rollerShutterUpdate(getTemperatureMod(), getLightIntensityMod(), getUserTempPreference(), getUserLightPreference(), latest_distance);
 }
 
 int main(void)

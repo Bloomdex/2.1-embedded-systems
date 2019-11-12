@@ -6,6 +6,7 @@
 #include "scheduler.h"
 #include "portManipulator.h"
 #include "ultrasonic.h"
+#include "userPreferenceHandler.h"
 
 #define F_CPU 16E6    // Frequency definition for delay.h
 #include <util/delay.h>
@@ -80,17 +81,17 @@ uint8_t getRollerShutterState() {
 
 static uint8_t distanceClosestToMax(int8_t distance)
 {
-	return abs(distance - MAX_DISTANCE_VALUE) < abs(distance - MIN_DISTANCE_VALUE);
+	return abs(distance - preferedMaxShutter) < abs(distance - preferedMinShutter);
 }
 
-void rollerShutterUpdate(int8_t temperature, int8_t lightIntensity, int8_t prefferedTemperature, int8_t prefferedLightIntensity, int8_t distanceMeasurement) {
+void rollerShutterUpdate(int8_t temperature, int8_t lightIntensity, int8_t prefferedTemperature, int8_t prefferedLightIntensity, uint8_t distanceMeasurement) {
 	// Determine which static state the rollerShutter is in
 	if(currentRollerShutterState != targetRollerShutterState) {
 		if(targetRollerShutterState == shutterClosing && currentRollerShutterState != shutterClosed) {
 			setRollerShutterAnimating(1);
 			
 			// if distanceMeasurement is closer to being closed than being opened
-			if(distanceClosestToMax(distanceMeasurement)) {
+			if(!distanceClosestToMax(distanceMeasurement)) {
 				targetRollerShutterState = shutterClosed;
 				currentRollerShutterState = shutterClosed;
 				setRollerShutterClosed();
@@ -99,7 +100,7 @@ void rollerShutterUpdate(int8_t temperature, int8_t lightIntensity, int8_t preff
 		else if(targetRollerShutterState == shutterOpening && currentRollerShutterState != shutterOpened) {
 			setRollerShutterAnimating(0);
 			
-			if(!distanceClosestToMax(distanceMeasurement)) {
+			if(distanceClosestToMax(distanceMeasurement)) {
 				targetRollerShutterState = shutterOpened;
 				currentRollerShutterState = shutterOpened;
 				setRollerShutterOpened();

@@ -33,10 +33,7 @@ float getLightIntensity() {
 	return lightIntensity;
 }
 
-float getDistance(void)
+uint8_t getDistance(void)
 {
-	float distance = measure_distance();
-	
-	// if distance is -1 return invalid, else return distance
-	return distance >= 0 ? distance : INVALID_READING_VALUE;
+	return measure_distance();
 }

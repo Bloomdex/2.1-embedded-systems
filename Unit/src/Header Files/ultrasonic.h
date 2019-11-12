@@ -6,8 +6,8 @@
 #define F_CPU 16E6
 #include <util/delay.h>
 
-#define MAX_SECONDS 25E-3
-#define MAX_CYCLES MAX_SECONDS * F_CPU
+#define MAX_CENTIMETERS 400U
+#define MAX_CYCLES UINT16_MAX
 
 #define ECHO_PORT _BV(PD3)
 #define TRIG_PORT _BV(PD2)
@@ -18,10 +18,10 @@
 #define PRESCALER_VALUE _BV(CS11)	// CS11 -> 8 prescaler
 #define TIMER1_OVF_INT _BV(TOIE1)
 
-#define MIN_DISTANCE_VALUE 35
+#define MIN_DISTANCE_VALUE 2
 #define MAX_DISTANCE_VALUE 70
 
 void init_ultrasonic(void);
-float measure_distance(void);
+uint8_t measure_distance(void);
 
 #endif /* ULTRASONIC_H_ */

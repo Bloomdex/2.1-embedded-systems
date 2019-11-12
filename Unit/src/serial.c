@@ -24,7 +24,7 @@ uint8_t temperature_head_index = 0;
 int8_t lights[LIGHT_STORAGE_SIZE];
 uint8_t lights_head_index = 0;
 
-int8_t distances[DISTANCE_STORAGE_SIZE];
+uint8_t distances[DISTANCE_STORAGE_SIZE];
 uint8_t distances_head_index = 0;
 
 //Adds the given temperature value to the temperature buffer.
@@ -39,7 +39,7 @@ void addLightToBuffer(int8_t value) {
     lights_head_index = (lights_head_index + 1) % LIGHT_STORAGE_SIZE;
 }
 
-void addDistanceToBuffer(int8_t value)
+void addDistanceToBuffer(uint8_t value)
 {
     distances[distances_head_index] = value;
     distances_head_index = (distances_head_index + 1) % DISTANCE_STORAGE_SIZE;
@@ -61,6 +61,23 @@ void transmitBufferData(char buffercode, int8_t storagebuffer[], unsigned char s
     transmitData(0x0A);
 }
 
+void transmitBufferDataUint(char buffercode, uint8_t storagebuffer[], unsigned char storageSize, int8_t bufferIndex)
+{
+    transmitData(buffercode);
+
+    for (uint8_t i = 0; i < storageSize; i++)
+    {
+        uint8_t index = (i + bufferIndex) % storageSize;
+
+        if (storagebuffer[index] != 0x00)
+            transmitData(storagebuffer[index]);
+    }
+
+    transmitData(0x00);
+    transmitData(buffercode);
+    transmitData(0x0A);
+}
+
 void transmitModuleStatus() {
     transmitData(CODE_MODULE_STATUS);
 
@@ -68,7 +85,7 @@ void transmitModuleStatus() {
     transmitData(getRollerShutterState());
     transmitData(currentTemperatureReading != INVALID_READING_VALUE);
     transmitData(currentLightReading != INVALID_READING_VALUE);
-    transmitData(currentDistanceReading != INVALID_READING_VALUE);
+    transmitData(0x01);
 
     transmitData(0x00);
     transmitData(CODE_MODULE_STATUS);
@@ -95,7 +112,7 @@ void handleInstructions(void) {
                 lights_head_index = 0;
                 break;
             case CODE_DISTANCE:
-                transmitBufferData(CODE_DISTANCE, distances, DISTANCE_STORAGE_SIZE, distances_head_index);
+                transmitBufferDataUint(CODE_DISTANCE, distances, DISTANCE_STORAGE_SIZE, distances_head_index);
                 memset(distances, 0, DISTANCE_STORAGE_SIZE);
                 distances_head_index = 0;
                 break;
