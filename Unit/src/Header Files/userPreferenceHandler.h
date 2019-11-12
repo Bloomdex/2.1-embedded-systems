@@ -17,6 +17,6 @@ int8_t getUserMaxShutterPreference();
 int8_t getUserMinShutterPreference();
 
 extern int8_t preferedMinShutter;
-extern int8_t preferedMaxShutter
+extern int8_t preferedMaxShutter;
 
 #endif /* USERPREFERENCEHANDLER_H_ */
