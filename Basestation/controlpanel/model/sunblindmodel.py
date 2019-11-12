@@ -19,6 +19,7 @@ class SunBlindModel:
         self.light_intensity = 75
         self.temperature = 25
         self.force = False
+        self.move_by_other_blinds = False
 
     @staticmethod
     def get_mode(data):
@@ -54,6 +55,10 @@ class SunBlindModel:
             if mode_temp < self.temperature and self.status_sun_blind == "open":
                 return "close"
         return None
+
+    def set_move_with_other_blinds(self):
+        #self.move_by_other_blinds = not self.move_by_other_blinds
+        print("test")
 
     def set_min_roll_out(self, min_roll_out):
         if min_roll_out < self.max_roll_out:
@@ -115,10 +120,10 @@ class SunBlindModel:
         self.status_sun_blind = status
 
     def roll_out(self):
-        self.module.send_data(0xFC)
+        self.module.send_data(0xFB)
 
     def roll_in(self):
-        self.module.send_data(0xFB)
+        self.module.send_data(0xFC)
 
     def get_data_x(self):
         return self.data_x

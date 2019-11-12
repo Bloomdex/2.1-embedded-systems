@@ -117,7 +117,14 @@ class Ui_SubWindow(object):
         self.free_button = QtWidgets.QPushButton(self.centralwidget)
         self.free_button.setObjectName("free_button")
         self.free_button.clicked.connect(lambda x: units.Units.set_free_unit(self.unit))
-        self.gridLayout.addWidget(self.free_button, 3, 11, 2, 1)
+        self.gridLayout.addWidget(self.free_button, 3, 11, 1, 1)
+        #move_with_other_blinds_button
+        self.move_with_other_blinds_button = QtWidgets.QPushButton(self.centralwidget)
+        self.move_with_other_blinds_button.setObjectName("move_with_other_blinds_button")
+        print(units.Units.units[self.unit].set_move_with_other_blinds())
+        #self.move_with_other_blinds_button.connect(units.Units.units[self.unit].set_move_with_other_blinds())
+        self.gridLayout.addWidget(self.move_with_other_blinds_button, 4, 11, 1, 1)
+
         # up_button
         self.up_button = QtWidgets.QPushButton(self.centralwidget)
         self.up_button.setObjectName("up_button")
@@ -345,6 +352,7 @@ class Ui_SubWindow(object):
         self.label_functions.setText(_translate("SubWindow", "Functions"))
         self.label_roll_out.setText(_translate("SubWindow", "Set sun blind roll out "))
         self.free_button.setText(_translate("SubWindow", "FREE"))
+        self.move_with_other_blinds_button.setText(_translate("SubWindow", "With other"))
         self.up_button.setText(_translate("SubWindow", "UP"))
         self.down_button.setText(_translate("SubWindow", "DOWN"))
         self.set_max_roll_out_button.setText(_translate("SubWindow", "Set max"))

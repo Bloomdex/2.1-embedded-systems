@@ -104,6 +104,7 @@ class Thread(QThread):
                         subwindow.subwindow.setEnabled(True)
                         subwindow.update()
                         subwindow.free_button.setEnabled(units.Units.units[subwindow.unit].force)
+                        subwindow.move_with_other_blinds_button.setEnabled(units.Units.units[subwindow.unit].force)
                     else:
                         units.Units.units[subwindow.unit].module.open_connection()
                         subwindow.subwindow.setEnabled(False)
@@ -111,19 +112,19 @@ class Thread(QThread):
                     MakeWindows.to_remove_from_subwindows.append(subwindow)
                 QApplication.processEvents()
 
-            '''if MakeWindows.roll_delay >= MakeWindows.roll_delay:
                 results = []
                 for unit in units.Units.units:
-                    results.append(units.Units.check_weather_unit(unit))
+                    results.append(units.Units.units[unit].status_sun_blind)
                 if "open" in results:
-                    MakeWindows.roll_delay = 0
                     for unit in units.Units.units:
-                        units.Units.units[unit].roll_out()
+                        if units.Units.units[unit].status_sun_blind == "closed" and \
+                                not units.Units.units[unit].force and units.Units.units[unit].move_by_other_blinds:
+                            units.Units.units[unit].roll_out()
                 elif "close" in results:
-                    MakeWindows.roll_delay = 0
                     for unit in units.Units.units:
-                        units.Units.units[unit].roll_in()
-            MakeWindows.roll_delay += 1'''
+                        if units.Units.units[unit].status_sun_blind == "open"and not units.Units.units[unit].force and \
+                                units.Units.units[unit].move_by_other_blinds:
+                            units.Units.units[unit].roll_in()
 
             for x in MakeWindows.to_remove_from_subwindows:
                 MakeWindows.subwindows.remove(x)
