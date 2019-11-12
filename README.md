@@ -56,7 +56,7 @@ python main.py
 #### Compiling
 
 ```
-sudo apt install avr-gcc
+sudo apt install gcc-avr
 cd Unit/
 make
 ```
