@@ -24,7 +24,7 @@
 #define LEDKEYUNITBUTTONREADING_TASK_PERIOD 4
 #define ROLLERSHUTTER_TASK_PERIOD 70
 #define HANDLEINSTRUCTIONS_PERIOD 5
-#define DISTANCE_TASK_PERIOD 3000 // every 30 seconds
+#define DISTANCE_TASK_PERIOD 500 // every 30 seconds
 
 uint8_t latest_distance;
 

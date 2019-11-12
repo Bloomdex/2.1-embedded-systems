@@ -85,7 +85,7 @@ void transmitModuleStatus() {
     transmitData(getRollerShutterState());
     transmitData(currentTemperatureReading != INVALID_READING_VALUE);
     transmitData(currentLightReading != INVALID_READING_VALUE);
-    transmitData(currentDistanceReading != INVALID_READING_VALUE);
+    transmitData(0x01);
 
     transmitData(0x00);
     transmitData(CODE_MODULE_STATUS);
