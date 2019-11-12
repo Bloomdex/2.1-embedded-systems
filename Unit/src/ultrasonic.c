@@ -54,7 +54,7 @@ void init_ultrasonic(void)
  * 
  * It returns a float with the amount of centimeters measured.
 */
-float measure_distance(void)
+uint8_t measure_distance(void)
 {
 	cleanup();
 	// send 10µs pulse to TRIG_PORT
@@ -72,7 +72,7 @@ float measure_distance(void)
 		{
 			// run cleanup and return -1 for invalid
 			cleanup();
-			return -1;
+			return 0;
 		}
 	}
 	cleanup();
@@ -84,14 +84,12 @@ float measure_distance(void)
 		if (total_cycles() > MAX_CYCLES)
 		{
 			cleanup();
-			return -1;
+			return 0;
 		}
 	}
 	// echo pulse is finished
-	float cm = total_cycles() / CYCLES_TO_CM_DIVIDER;
-
-	cleanup();
-	// return decimeters so it fits within int8_t which is used as the 
-	// standard data transfer type
-	return cm;
+	uint16_t cm = total_cycles() / CYCLES_TO_CM_DIVIDER;
+	if (cm > UINT8_MAX)
+		return UINT8_MAX;
+	return (uint8_t)cm;
 }
