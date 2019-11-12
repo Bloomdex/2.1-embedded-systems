@@ -7,7 +7,7 @@
 #include <util/delay.h>
 
 #define MAX_CENTIMETERS 400U
-#define MAX_CYCLES MAX_CENTIMETERS * 58
+#define MAX_CYCLES UINT16_MAX / 8 - 1000
 
 #define ECHO_PORT _BV(PD3)
 #define TRIG_PORT _BV(PD2)
