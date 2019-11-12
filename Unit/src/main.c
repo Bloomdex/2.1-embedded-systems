@@ -26,6 +26,8 @@
 #define HANDLEINSTRUCTIONS_PERIOD 5
 #define DISTANCE_TASK_PERIOD 3000 // every 30 seconds
 
+uint8_t latest_distance;
+
 
 void setup(void) {
 	DDRB = (1 << PIND0) | (1 << PIND1) | (1 << PIND2) | (1 << PIND3) | (1 << PIND4);
@@ -69,6 +71,7 @@ void distance_task(void)
 
 	if (distanceReading != 0)
 	{
+		latest_distance = distanceReading;
 		addDistanceToBuffer(distanceReading);
 	}
 		
@@ -103,7 +106,7 @@ void ledKeyUnitButtonReading_task(void)
 
 void rollerShutter_task(void)
 {
-	rollerShutterUpdate(getTemperatureMod(), getLightIntensityMod(), getUserTempPreference(), getUserLightPreference(), currentDistanceReading);
+	rollerShutterUpdate(getTemperatureMod(), getLightIntensityMod(), getUserTempPreference(), getUserLightPreference(), latest_distance);
 }
 
 int main(void)

@@ -83,7 +83,6 @@ uint8_t measure_distance(void)
 		// check that the pulse doesn't take too long
 		if (total_cycles() > MAX_CYCLES)
 		{
-			cleanup();
 			return 0;
 		}
 	}
