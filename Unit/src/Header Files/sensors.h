@@ -1,6 +1,8 @@
 #ifndef SENSORS_H_
 #define SENSORS_H_
 
+#include <avr/io.h>
+
 #define INVALID_READING_VALUE -128
 
 float getTemperature();
