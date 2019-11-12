@@ -18,7 +18,7 @@
 #define PRESCALER_VALUE _BV(CS11)	// CS11 -> 8 prescaler
 #define TIMER1_OVF_INT _BV(TOIE1)
 
-#define MIN_DISTANCE_VALUE 35
+#define MIN_DISTANCE_VALUE 2
 #define MAX_DISTANCE_VALUE 70
 
 void init_ultrasonic(void);
