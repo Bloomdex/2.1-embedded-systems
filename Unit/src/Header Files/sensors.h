@@ -5,6 +5,6 @@
 
 float getTemperature();
 float getLightIntensity();
-float getDistance(void);
+uint8_t getDistance(void);
 
 #endif /* SENSORS_H_ */

@@ -40,6 +40,7 @@ void addTemperatureToBuffer(int8_t value);
 void addLightToBuffer(int8_t value);
 void addDistanceToBuffer(int8_t value);
 void transmitBufferData(char buffercode, int8_t storagebuffer[], unsigned char storageSize, int8_t bufferIndex);
+void transmitBufferDataUint(char buffercode, uint8_t storagebuffer[], unsigned char storageSize, int8_t bufferIndex);
 void transmitModuleStatus();
 void handleInstructions();
 

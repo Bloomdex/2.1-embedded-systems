@@ -65,11 +65,13 @@ void updateSensorData_task(void) {
 
 void distance_task(void)
 {
-	int8_t distanceReading = (int8_t)getDistance();
-	currentDistanceReading = distanceReading;
+	uint8_t distanceReading = getDistance();
 
-	if (distanceReading != INVALID_READING_VALUE)
+	if (distanceReading != 0)
+	{
 		addDistanceToBuffer(distanceReading);
+	}
+		
 }
 void temperature_task(void)
 {
